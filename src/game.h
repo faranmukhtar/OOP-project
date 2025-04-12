@@ -6,5 +6,7 @@
 //Game logic goes here
 class Game{
     private:
-        Player player;
+        User user;
+        vector<Enemy*> enemies;
+        vector<Obstacle*> obstacles;
 };
