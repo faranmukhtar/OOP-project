@@ -1,72 +1,52 @@
-#include <iostream>
-#include "raylib.h"
-#include "resource_dir.h"
-using namespace std;
+#include "classes.h"
 
-// USE VECTORS FOR COORDINATES LATER
-
-//Unsure if this is needed
-class Projectile{
-
-};
+// Might have to seperate all the classes here to seperate files
 
 //Might have to change attributes for specialized weapons
-class Weapon{
-    private:
-        int ammo;
-        int maxAmmo;
-        int durability;
-    public:
-        Weapon(int a){
-            this->maxAmmo = ammo;
-        }
 
-        //Returns probably a projectile object. Check later
-        virtual void shoot() = 0;
+Weapon::Weapon(int a){
+    this->maxAmmo = ammo;
+}
 
-        //Unsure whether this is needed
-        virtual void reload() = 0;
-
-        int getAmmo(){return ammo;}
-};
-
-class Player{
-    private:
-        Vector2 position;
-        int health;
-        Weapon* weapon = nullptr;
-    public:
-        Player(int x, int y, int h, Weapon* w){
-            this->health = h;
-            this->weapon = w;
-            position.x = x;
-            position.y = y;
-        };
-
-        virtual void assignWeapon(Weapon*) = 0;
-
-        virtual void move(int, int) = 0;
-
-        Vector2 getPosition(){return position;}
-};
-
-class Enemy : public Player{
+//Returns probably a projectile object. Check later
+void Weapon::shoot(){
 
 };
 
-class User : public Player{
+//Unsure whether this is needed
+void Weapon::reload(){
+
+}
+
+int Weapon::getAmmo(){
+    return ammo;
+}
+
+Player::Player(int x, int y, int h, Weapon* w){
+    this->health = h;
+    this->weapon = w;
+    position.x = x;
+    position.y = y;
+};
+
+void Player::assignWeapon(Weapon*){
 
 };
+
+void Player::move(int x, int y){
+
+};
+
+Vector2 Player::getPosition(){
+    return position;
+}
 
 //Setup different types of obstacles later
-class Obstacle{
-    private:
-        Vector2 position;
-    public:
-        Obstacle(int x, int y){
-            position.x = x;
-            position.y = y;
-        }
+Obstacle::Obstacle(int x, int y){
+    position.x = x;
+    position.y = y;
+}
 
-        Vector2 getPosition(){return position;}
-};
+Vector2 Obstacle::getPosition(){
+    return position;
+}
