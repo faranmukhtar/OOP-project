@@ -1,68 +1,72 @@
-// #include <iostream>
-// using namespace std;
+#include <iostream>
+#include "raylib.h"
+#include "resource_dir.h"
+using namespace std;
 
-// // USE VECTORS FOR COORDINATES LATER
+// USE VECTORS FOR COORDINATES LATER
 
-// //Unsure if this is needed
-// class Projectile{
+//Unsure if this is needed
+class Projectile{
 
-// };
+};
 
-// //Might have to change attributes for specialized weapons
-// class Weapon{
-//     private:
-//         int ammo;
-//         int maxAmmo;
-//         int durability;
-//     public:
-//         Weapon(int);
+//Might have to change attributes for specialized weapons
+class Weapon{
+    private:
+        int ammo;
+        int maxAmmo;
+        int durability;
+    public:
+        Weapon(int a){
+            this->maxAmmo = ammo;
+        }
 
-//         //Returns probably a projectile object. Check later
-//         void shoot();
+        //Returns probably a projectile object. Check later
+        virtual void shoot() = 0;
 
-//         //Unsure whether this is needed
-//         void reload();
+        //Unsure whether this is needed
+        virtual void reload() = 0;
 
-//         int getAmmo(){return ammo;}
-// };
+        int getAmmo(){return ammo;}
+};
 
-// class Player{
-//     private:
-//         int x;
-//         int y;
-//         int health;
-//         Weapon* weapon = nullptr;
-//     public:
-//         Player(int, int, int, Weapon*);
+class Player{
+    private:
+        Vector2 position;
+        int health;
+        Weapon* weapon = nullptr;
+    public:
+        Player(int x, int y, int h, Weapon* w){
+            this->health = h;
+            this->weapon = w;
+            position.x = x;
+            position.y = y;
+        };
 
-//         void assignWeapon(Weapon*);
+        virtual void assignWeapon(Weapon*) = 0;
 
-//         void move(int, int);
+        virtual void move(int, int) = 0;
 
-//         int getX(){return x;}
-//         int getY(){return y;}
-// };
+        Vector2 getPosition(){return position;}
+};
 
-// class Enemy : public Player{
+class Enemy : public Player{
 
-// };
+};
 
-// class User : public Player{
+class User : public Player{
 
-// };
+};
 
-// //Setup different types of obstacles later
-// class Obstacle{
-//     private:
-//         int x;
-//         int y;
-//     public:
-//         Obstacle(int, int);
+//Setup different types of obstacles later
+class Obstacle{
+    private:
+        Vector2 position;
+    public:
+        Obstacle(int x, int y){
+            position.x = x;
+            position.y = y;
+        }
 
-//         int getX(){return x;}
-//         int getY(){return y;}
-// };
-
-// int main(void){
-
-// }
+        Vector2 getPosition(){return position;}
+};
