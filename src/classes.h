@@ -4,11 +4,16 @@
 #include <vector>
 using namespace std;
 
+//Future considerations:
+//Use of Projectile class
+//Use Rectangle instead of Vector2
+
 class Weapon{
     private:
         int ammo;
         int maxAmmo;
         int durability;
+        double damage;
     public:
         Weapon(int a);
         virtual void shoot();
@@ -26,11 +31,12 @@ class Player{
         Player(int x, int y, int h, Weapon* w);
         virtual void assignWeapon(Weapon*);
         virtual void move(int, int);
+        virtual void useWeapon(int, int);
         Vector2 getPosition();
         bool isAlive();
         int getHealth();
         //Maybe virtual
-        void draw();
+        virtual void draw();
 };
 
 class Enemy : public Player{
@@ -39,8 +45,12 @@ class Enemy : public Player{
 };
 
 class User : public Player{
+    private:
+        bool onGround;
     public:
-        User() : Player(50, 50, 100, nullptr){}
+        User() : Player(50, 50, 100, nullptr), onGround(true){}
+        //Might add more movement mechanics like dash, slide or double jump
+        void jump();
 };
 
 class Obstacle{

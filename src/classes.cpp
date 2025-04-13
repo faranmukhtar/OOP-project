@@ -5,7 +5,6 @@ Weapon::Weapon(int a){
     this->maxAmmo = ammo;
 }
 
-//Returns probably a projectile object. Check later
 void Weapon::shoot(){
 
 };
@@ -35,6 +34,11 @@ void Player::move(int x, int y){
 
 };
 
+//Recheck later
+void Player::useWeapon(int x, int y){
+
+}
+
 bool Player::isAlive(){
     return health == 0;
 }
@@ -48,6 +52,10 @@ Vector2 Player::getPosition(){
 }
 
 void Player::draw(){
+
+}
+
+void User::jump(){
 
 }
 
