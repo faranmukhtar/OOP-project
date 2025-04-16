@@ -25,7 +25,7 @@ void Game::drawBackground(){
 }
 
 void Game::drawScreen(){
-
+    user.draw();
 }
 
 void Game::takeInput(){

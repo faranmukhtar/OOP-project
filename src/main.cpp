@@ -4,6 +4,8 @@
 
 int main ()
 {
+	Game game;
+
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	InitWindow(1280, 800, "Shadow Sprint");
@@ -16,7 +18,7 @@ int main ()
 
 		ClearBackground(BLACK);
 
-		DrawText("Hello from Hammad", 200,200,20,WHITE);
+		game.drawScreen();
 		
 		EndDrawing();
 	}

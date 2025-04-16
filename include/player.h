@@ -5,7 +5,7 @@
 using namespace std;
 
 class Player{
-    private:
+    protected:
         Rectangle hitbox;
         int health;
         Weapon* weapon = nullptr;
@@ -17,7 +17,7 @@ class Player{
         Rectangle getHitbox();
         bool isAlive();
         int getHealth();
-        virtual void draw();
+        virtual void draw() = 0;
 };
 
 class Enemy : public Player{
@@ -31,5 +31,6 @@ class User : public Player{
     public:
         User() : Player(50, 50, 50, 100, 100, nullptr), onGround(true){}
         //Might add more movement mechanics like dash, slide or double jump
+        void draw();
         void jump();
 };

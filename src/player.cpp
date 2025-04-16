@@ -34,8 +34,8 @@ Rectangle Player::getHitbox(){
     return hitbox;
 }
 
-void Player::draw(){
-
+void User::draw(){
+    DrawRectangleRec(hitbox, BLUE);
 }
 
 void User::jump(){
