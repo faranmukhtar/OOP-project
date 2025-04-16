@@ -1,32 +1,14 @@
 #pragma once
 #include "raylib.h"
 #include "resource_dir.h"
-#include <vector>
+#include "weapon.h"
 using namespace std;
-
-//Future considerations:
-//Use of Projectile class
-//Use Rectangle instead of Vector2
-
-class Weapon{
-    private:
-        int ammo;
-        int maxAmmo;
-        int durability;
-        double damage;
-    public:
-        Weapon(int a);
-        virtual void shoot();
-        virtual void reload();
-        int getAmmo();
-};
 
 class Player{
     private:
         Vector2 position;
         int health;
         Weapon* weapon = nullptr;
-        vector<Vector2> projectiles;
     public:
         Player(int x, int y, int h, Weapon* w);
         virtual void assignWeapon(Weapon*);
@@ -51,13 +33,4 @@ class User : public Player{
         User() : Player(50, 50, 100, nullptr), onGround(true){}
         //Might add more movement mechanics like dash, slide or double jump
         void jump();
-};
-
-class Obstacle{
-    private:
-        Vector2 position;
-    public:
-        Obstacle(int x, int y);
-        Vector2 getPosition();
-        void draw();
 };

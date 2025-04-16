@@ -1,7 +1,9 @@
 #pragma once
 #include "raylib.h"
 #include "resource_dir.h"
-#include "classes.h"
+#include "player.h"
+#include "obstacle.h"
+#include <vector>
 
 //Game logic goes here
 class Game{
