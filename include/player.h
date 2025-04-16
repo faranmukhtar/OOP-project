@@ -6,31 +6,30 @@ using namespace std;
 
 class Player{
     private:
-        Vector2 position;
+        Rectangle hitbox;
         int health;
         Weapon* weapon = nullptr;
     public:
-        Player(int x, int y, int h, Weapon* w);
+        Player(double, double, double, double, int, Weapon*);
         virtual void assignWeapon(Weapon*);
         virtual void move(int, int);
         virtual void useWeapon(int, int);
-        Vector2 getPosition();
+        Rectangle getHitbox();
         bool isAlive();
         int getHealth();
-        //Maybe virtual
         virtual void draw();
 };
 
 class Enemy : public Player{
     public:
-        Enemy(int x, int y, int h, Weapon* w) : Player(x, y, h, w) {}
+        Enemy(double x, double y, double width, double height, int health, Weapon* weapon) : Player(x, y, width, height, health, weapon) {}
 };
 
 class User : public Player{
     private:
         bool onGround;
     public:
-        User() : Player(50, 50, 100, nullptr), onGround(true){}
+        User() : Player(50, 50, 50, 100, 100, nullptr), onGround(true){}
         //Might add more movement mechanics like dash, slide or double jump
         void jump();
 };

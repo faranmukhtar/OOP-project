@@ -3,6 +3,7 @@
 #include "resource_dir.h"
 #include "player.h"
 #include "obstacle.h"
+#include "projectile.h"
 #include <vector>
 
 //Game logic goes here
@@ -11,6 +12,8 @@ class Game{
         User user;
         vector<Enemy*> enemies;
         vector<Obstacle*> obstacles;
+        vector<Projectile*> enemyProjectiles;
+        vector<Projectile*> userProjectiles;
     public:
         void spawnEnemy();
         void despawnEnemy(int);

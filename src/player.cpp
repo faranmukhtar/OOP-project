@@ -1,10 +1,12 @@
 #include "player.h"
 
-Player::Player(int x, int y, int h, Weapon* w){
-    this->health = h;
-    this->weapon = w;
-    position.x = x;
-    position.y = y;
+Player::Player(double x, double y, double width, double height, int health, Weapon* weapon){
+    this->health = health;
+    this->weapon = weapon;
+    this->hitbox.x = x;
+    this->hitbox.y = y;
+    this->hitbox.height = height;
+    this->hitbox.width = width;
 };
 
 void Player::assignWeapon(Weapon* w){
@@ -28,8 +30,8 @@ int Player::getHealth(){
     return health;
 }
 
-Vector2 Player::getPosition(){
-    return position;
+Rectangle Player::getHitbox(){
+    return hitbox;
 }
 
 void Player::draw(){
