@@ -11,7 +11,7 @@ class Projectile{
         Color color;
     public:
         Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color);
-        void drawProjectile();
+        void draw();
         void move();
         void adjustSpeed(double, double);
         Vector2 getCenter();

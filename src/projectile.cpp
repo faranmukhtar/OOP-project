@@ -9,7 +9,7 @@ Projectile::Projectile(double speedX, double SpeedY, double x, double y, double 
     this->color = color;
 }
 
-void Projectile::drawProjectile(){
+void Projectile::draw(){
     void DrawCircleV(Vector2 center, float radius, Color color);
 }
 
