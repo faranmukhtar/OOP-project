@@ -4,6 +4,7 @@
 
 int main ()
 {
+	srand(time(0));
 	Game game;
 
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
@@ -20,6 +21,8 @@ int main ()
 
 		ClearBackground(BLACK);
 
+		game.spawnObstacles();
+		game.updateObstacles();
 		game.drawScreen();
 		
 		EndDrawing();

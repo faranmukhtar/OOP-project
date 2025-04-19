@@ -12,5 +12,10 @@ Rectangle Obstacle::getHitbox(){
 }
 
 void Obstacle::draw(){
-    DrawRectangleRec(hitbox, BROWN);
+    DrawRectangleRec(hitbox, WHITE);
+}
+
+void Obstacle::move(double x, double y){
+    hitbox.x += x;
+    hitbox.y += y;
 }
