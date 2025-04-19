@@ -48,31 +48,27 @@ void User::draw(){
     updateBullets();
 }
 
-void User::jump(){
-    if(hitbox.y==GROUND_Y -100){
-        jumping = 1;
-        pos = 150;
-    }
-    else if(jumping==1 || jumping ==2){
-        jumping =3;
-        pos = hitbox.y -30;
+void User::jump() {
+    if (jumps>0) {
+        jumpvelocity = -15; 
+        jumping = true;
+        jumps--;
     }
 }
 
-void User::updatejump(){
-    if((jumping==1 ||jumping ==3)  && hitbox.y>pos){
-        hitbox.y = hitbox.y-10;
-        if(hitbox.y<=pos){
-            jumping =2;
-        }
-    }
-    if(jumping ==2 &&hitbox.y<GROUND_Y -100){
-        hitbox.y = hitbox.y+5;
-    }
-    if(hitbox.y == GROUND_Y -100){
-        jumping = 0;
+
+void User::updatejump() {
+    jumpvelocity+= 0.8; 
+    hitbox.y += jumpvelocity;
+
+    if (hitbox.y >= GROUND_Y - hitbox.height) {
+        hitbox.y = GROUND_Y - hitbox.height;
+        jumpvelocity = 0;
+        jumping = false;
+        jumps =2;
     }
 }
+
 
 Projectile Enemy::useWeapon(int x, int y){
     Projectile newBullet(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);

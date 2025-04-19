@@ -31,12 +31,13 @@ class Enemy : public Player{
 
 class User : public Player{
     private:
-    int jumping;
-    int pos;
+    float jumpvelocity;
+    int jumps;
+    bool jumping;
     public:
         User() : Player(50, GROUND_Y - 100, 50, 100, 100){
-            jumping =0;
-            pos = GROUND_Y -100;
+            jumpvelocity =0;
+            jumps = 2;
         }
         //Might add more movement mechanics like dash, slide or double jump
         void draw();

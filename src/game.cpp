@@ -40,6 +40,7 @@ void Game::takeInput(){
     if(IsKeyPressed(KEY_SPACE)){
         user.jump();
     }
+
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
         user.useWeapon(5,5);
     }
