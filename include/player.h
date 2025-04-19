@@ -23,6 +23,16 @@ class Enemy : public Player{
         Enemy(double x, double y, double width, double height, int health) : Player(x, y, width, height, health) {}
 };
 
+class Bomber : public Enemy{   //shoots bomb from directly above the user
+    public:
+        Bomber(double x, double y, double width, double height, int health) : Enemy(x, y, width, height, health){}
+};
+
+class Gunner : public Enemy{   //floating enemy wielding a gun
+    public:
+        Gunner(double x, double y, double width, double height, int health) : Enemy(x, y, width, height, health){}
+};
+
 class User : public Player{
     public:
         User() : Player(50, GROUND_Y - 100, 50, 100, 100){}

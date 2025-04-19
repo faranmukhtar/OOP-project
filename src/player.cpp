@@ -1,5 +1,6 @@
 #include "player.h"
 
+
 Player::Player(double x, double y, double width, double height, int health){
     this->health = health;
     this->hitbox.x = x;

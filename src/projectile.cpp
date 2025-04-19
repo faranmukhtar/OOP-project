@@ -1,6 +1,6 @@
 #include "projectile.h"
 
-Projectile::Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color){
+Projectile::Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color, bool active){
     speed.x = speedX;
     speed.y = SpeedY;
     center.x = x;
