@@ -18,7 +18,7 @@ class Game{
     public:
         void spawnEnemy();
         void despawnEnemies();
-        void spawnObstacle();
+        void spawnObstacles();
         void despawnObstacles();
         void checkGameOver();
         void drawBackground();

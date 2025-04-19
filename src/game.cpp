@@ -8,7 +8,7 @@ void Game::despawnEnemies(){
 
 }
 
-void Game::spawnObstacle(){
+void Game::spawnObstacles(){
 
 }
 
@@ -27,6 +27,9 @@ void Game::drawBackground(){
 void Game::drawScreen(){
     drawBackground();
     user.draw();
+    for(int i = 0; i < obstacles.size(); i++){
+        obstacles[i]->draw();
+    }
 }
 
 void Game::takeInput(){
