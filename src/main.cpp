@@ -8,7 +8,9 @@ int main ()
 
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-	InitWindow(1280, 800, "Shadow Sprint");
+	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Shadow Sprint");
+
+	SetTargetFPS(60);
 
 	SearchAndSetResourceDir("resources");
 	

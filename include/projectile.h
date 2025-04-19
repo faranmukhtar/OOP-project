@@ -4,10 +4,18 @@
 using namespace std;
 
 class Projectile{
-    private:
-        Rectangle hitbox;
+    protected:
+        Vector2 speed;
+        Vector2 center;
+        double radius;
+        Color color;
     public:
+        Projectile(double, double, double, double, double, Color);
         void drawProjectile();
-        void checkCollision();
-        Rectangle getHitbox();
+        void move();
+        void adjustSpeed(double, double);
+        Vector2 getCenter();
+        Vector2 getSpeed();
+        double getRadius();
+        Color getColor();
 };

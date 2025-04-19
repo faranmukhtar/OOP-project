@@ -4,7 +4,7 @@ void Game::spawnEnemy(){
 
 }
 
-void Game::despawnEnemy(int){
+void Game::despawnEnemies(){
 
 }
 
@@ -12,7 +12,7 @@ void Game::spawnObstacle(){
 
 }
 
-void Game::despawnObstacle(int){
+void Game::despawnObstacles(){
 
 }
 
@@ -21,10 +21,11 @@ void Game::checkGameOver(){
 }
 
 void Game::drawBackground(){
-
+    DrawLine(0, GROUND_Y, GetScreenWidth(), GROUND_Y, WHITE);
 }
 
 void Game::drawScreen(){
+    drawBackground();
     user.draw();
 }
 

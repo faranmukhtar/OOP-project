@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include "resource_dir.h"
+#include "constants.h"
 #include "player.h"
 #include "obstacle.h"
 #include "projectile.h"
@@ -16,9 +17,9 @@ class Game{
         vector<Projectile*> userProjectiles;
     public:
         void spawnEnemy();
-        void despawnEnemy(int);
+        void despawnEnemies();
         void spawnObstacle();
-        void despawnObstacle(int);
+        void despawnObstacles();
         void checkGameOver();
         void drawBackground();
         void drawScreen();
