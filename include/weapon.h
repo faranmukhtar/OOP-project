@@ -12,7 +12,7 @@ class Weapon{
         int durability;
         double damage;
     public:
-        Weapon(int a);
+        Weapon(int ammo);
         virtual void shoot();
         virtual void reload();
         int getAmmo();

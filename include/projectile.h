@@ -10,7 +10,7 @@ class Projectile{
         double radius;
         Color color;
     public:
-        Projectile(double, double, double, double, double, Color);
+        Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color);
         void drawProjectile();
         void move();
         void adjustSpeed(double, double);
