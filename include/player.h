@@ -1,32 +1,91 @@
 #pragma once
+#include <vector>
 #include "raylib.h"
+#include "raymath.h"
 #include "resource_dir.h"
 #include "constants.h"
+#include "projectile.h"
+#include <cmath>
+
 using namespace std;
 
 class Player{
     protected:
         Rectangle hitbox;
         int health;
+        std::vector<Projectile> bullets;
     public:
         Player(double x, double y, double width, double height, int health);
-        virtual void move(int, int);
-        virtual void useWeapon(int, int);
+        virtual Projectile useWeapon(int, int) = 0;
+        virtual void updateBullets();
         Rectangle getHitbox();
+
         bool isAlive();
         int getHealth();
         virtual void draw() = 0;
+        virtual void jump() =0;
 };
 
 class Enemy : public Player{
+    protected:
+        float timer;
     public:
-        Enemy(double x, double y, double width, double height, int health) : Player(x, y, width, height, health) {}
+        Enemy(double x, double y, double width, double height, int health) :Player(x, y, width, height, health),timer(0){}
+        virtual void takeDamage() = 0;
+};
+
+class Bomber : public Enemy{
+    private:
+        bool hasDroppedBomb;
+        int moveSpeed;
+    
+    public:
+        Bomber(double x, double y) : Enemy(x, y, 40, 40, 1), hasDroppedBomb(false), moveSpeed(2){}
+        Projectile* useWeapon(int x, int y) override;
+        void move(int x, int y)override;
+        void takeDamage()override;
+        void draw() override;
+};
+
+class Gunner : public Enemy{ 
+    private:
+        int moveDirection;
+        const float moveInterval = 1.5f;
+        const float shootInterval = 1.0f;
+        float shootTimer;
+    
+    public:
+        Gunner(double x, double y) : Enemy(x, y, 40, 60, 3), moveDirection(1), shootTimer(0){}
+        Projectile* useWeapon(int x, int y)override;
+        void draw() override;
+        void takeDamage()override;
+        void move(int x, int y)override;
+};
+
+class Bird : public Enemy{
+    public:
+        Bird(double x, double y);
+        void move(int x, int y)override{}
+        Projectile* useWeapon(int x, int y)override;
+        void takeDamage() override;
+        void draw() override;
 };
 
 class User : public Player{
+    private:
+    float jumpvelocity;
+    int jumps;
+    bool jumping;
     public:
-        User() : Player(50, GROUND_Y - 100, 50, 100, 100){}
+        User() : Player(50, GROUND_Y - 100, 50, 100, 100){
+            jumpvelocity =0;
+            jumps = 2;
+        }
+
         //Might add more movement mechanics like dash, slide or double jump
-        void draw();
+        void draw() override;
         void jump();
+        void move(int, int);
+        void updatejump();
+        Projectile useWeapon(int, int);
 };

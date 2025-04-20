@@ -43,6 +43,7 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
+        
     public:
         static double obstacleInterval;
         static double obstacleTimer;

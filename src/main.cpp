@@ -6,7 +6,7 @@ int main ()
 {
 	srand(time(0));
 	Game game;
-
+	
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Shadow Sprint");
@@ -18,13 +18,16 @@ int main ()
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
-
+		
 		ClearBackground(BLACK);
+
 
 		game.spawnObstacles();
 		game.updateObstacles();
+
+		game.takeInput();
+
 		game.drawScreen();
-		
 		EndDrawing();
 	}
 
