@@ -7,6 +7,34 @@
 #include "projectile.h"
 #include <vector>
 
+const string OBSTACLE_PATTERN[][3][3] = {{{"O", "O", "O"},
+                                          {"O", "X", "O"},
+                                          {"X", "X", "X"}},
+
+                                         {{"O", "O", "O"},
+                                          {"O", "X", "X"},
+                                          {"X", "X", "X"}},
+
+                                         {{"O", "X", "O"},
+                                          {"O", "X", "O"},
+                                          {"O", "X", "O"}},
+
+                                         {{"O", "O", "O"},
+                                          {"X", "X", "O"},
+                                          {"X", "X", "X"}},
+                                        
+                                         {{"X", "O", "O"},
+                                          {"X", "X", "O"},
+                                          {"X", "X", "X"}},
+
+                                          {{"O", "O", "O"},
+                                          {"X", "X", "X"},
+                                          {"X", "X", "X"}},
+
+                                          {{"O", "O", "X"},
+                                          {"O", "X", "X"},
+                                          {"X", "X", "X"}}};
+
 //Game logic goes here
 class Game{
     private:
@@ -17,10 +45,14 @@ class Game{
         vector<Projectile*> userProjectiles;
         
     public:
+        static double obstacleInterval;
+        static double obstacleTimer;
+
         void spawnEnemy();
         void despawnEnemies();
-        void spawnObstacle();
+        void spawnObstacles();
         void despawnObstacles();
+        void updateObstacles();
         void checkGameOver();
         void drawBackground();
         void drawScreen();

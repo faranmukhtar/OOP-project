@@ -1,13 +1,15 @@
 #pragma once
 #include "raylib.h"
 #include "resource_dir.h"
+#include "constants.h"
 using namespace std;
 
 class Obstacle{
     private:
-        Vector2 position;
+        Rectangle hitbox;
     public:
-        Obstacle(int x, int y);
-        Vector2 getPosition();
+        Obstacle(double x, double y);
+        Rectangle getHitbox();
         void draw();
+        void move(double x, double y);
 };

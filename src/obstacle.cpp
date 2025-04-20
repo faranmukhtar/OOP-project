@@ -1,14 +1,21 @@
 #include "obstacle.h"
 
-Obstacle::Obstacle(int x, int y){
-    position.x = x;
-    position.y = y;
+Obstacle::Obstacle(double x, double y){
+    hitbox.x = x;
+    hitbox.y = y;
+    hitbox.width = OBSTACLE_LENGTH;
+    hitbox.height = OBSTACLE_LENGTH;
 }
 
-Vector2 Obstacle::getPosition(){
-    return position;
+Rectangle Obstacle::getHitbox(){
+    return hitbox;
 }
 
 void Obstacle::draw(){
+    DrawRectangleRec(hitbox, WHITE);
+}
 
+void Obstacle::move(double x, double y){
+    hitbox.x += x;
+    hitbox.y += y;
 }
