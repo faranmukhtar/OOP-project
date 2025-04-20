@@ -15,6 +15,7 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
+        
     public:
         void spawnEnemy();
         void despawnEnemies();
