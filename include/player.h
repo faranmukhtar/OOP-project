@@ -1,7 +1,10 @@
 #pragma once
 #include "raylib.h"
+#include "raymath.h"
 #include "resource_dir.h"
 #include "constants.h"
+#include "projectile.h"
+#include <cmath>
 using namespace std;
 
 class Player{
@@ -13,7 +16,7 @@ class Player{
     public:
         Player(double x, double y, double width, double height, int health);
         virtual void move(int x, int y);
-        virtual void useWeapon(int x, int y);
+        virtual Projectile* useWeapon(int x, int y);
         Rectangle getHitbox();
         bool isAlive();
         int getHealth();
@@ -25,25 +28,23 @@ class Enemy : public Player{
         float timer;
     public:
         Enemy(double x, double y, double width, double height, int health) :Player(x, y, width, height, health),timer(0){}
-        virtual void Update() = 0;
         virtual void takeDamage() = 0;
 };
 
-class Bomber : public Enemy{  //Drops a bomb from directly above the player
+class Bomber : public Enemy{
     private:
         bool hasDroppedBomb;
-        const float bombInterval = 1.5f;
         int moveSpeed;
     
     public:
-        Bomber(double x, double y) : Enemy(x, y, 40, 40, 1), hasDroppedBomb(false){}
+        Bomber(double x, double y) : Enemy(x, y, 40, 40, 1), hasDroppedBomb(false), moveSpeed(2){}
+        Projectile* useWeapon(int x, int y) override;
         void move(int x, int y)override;
-        void useWeapon(int x, int y)override;
         void takeDamage()override;
         void draw() override;
 };
 
-class Gunner : public Enemy{  //Shoots the player with its gun (using projectile logic)
+class Gunner : public Enemy{ 
     private:
         int moveDirection;
         const float moveInterval = 1.5f;
@@ -52,10 +53,21 @@ class Gunner : public Enemy{  //Shoots the player with its gun (using projectile
     
     public:
         Gunner(double x, double y) : Enemy(x, y, 40, 60, 3), moveDirection(1), shootTimer(0){}
-        void useWeapon(int x, int y)override;
+        Projectile* useWeapon(int x, int y)override;
         void draw() override;
         void takeDamage()override;
         void move(int x, int y)override;
+};
+
+class Bird : public Enemy{
+    public:
+        Bird(double x, double y);
+        void move(int x, int y)override{}
+        Projectile* useWeapon(int x, int y)override;
+        void takeDamage() override;
+        void draw() override;
+
+
 };
 
 class User : public Player{

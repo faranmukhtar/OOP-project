@@ -10,7 +10,7 @@ Projectile::Projectile(double speedX, double SpeedY, double x, double y, double 
 }
 
 void Projectile::draw(){
-    void DrawCircleV(Vector2 center, float radius, Color color);
+    DrawCircleV(center, (float)radius, color);  // Actual drawing call   
 }
 
 void Projectile::move(){

@@ -12,7 +12,7 @@ Player::Player(double x, double y, double width, double height, int health){
 
 void Player::move(int x, int y){}
 
-void Player::useWeapon(int x, int y){}
+Projectile* Player::useWeapon(int x, int y){}
 
 bool Player::isAlive(){
     return alive;
@@ -27,25 +27,25 @@ Rectangle Player::getHitbox(){
 }
 
 void Bomber::move(int x, int y){
-    if (hasDroppedBomb) {
-        hitbox.y -= moveSpeed; 
+    if (!hasDroppedBomb){
+        if (hitbox.x < x) hitbox.x += moveSpeed;  //move above user
+        else if (hitbox.x > x) hitbox.x -= moveSpeed;
     }
-
-    if (hitbox.y + hitbox.height < 0){  //dies when out of screen
-        alive = false;
+    else{
+        hitbox.y -= moveSpeed;  
+        if (hitbox.y + hitbox.height < 0){
+            alive = false;
+        }
     }
-
 }
 
-void Bomber::useWeapon(int x, int y){
-    if (!alive) return;
-    timer += GetFrameTime();
-
-    if(timer >= bombInterval && !hasDroppedBomb){
+Projectile* Bomber::useWeapon(int userX, int userY){
+    if(!alive || hasDroppedBomb) return nullptr;
+    if(abs(hitbox.x - userX) < 5){   //drops bomb when above user
         hasDroppedBomb = true;
-        //return projectile object
+        return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE, true);
     }
-
+    return nullptr;
 }
 
 void Bomber::draw(){
@@ -67,14 +67,16 @@ void Gunner::move(int x, int y){   //moves under defined intervals
     hitbox.x += moveDirection * 1.5f;
 }
 
-void Gunner::useWeapon(int x, int y){  
-    if(!alive) return; 
-
-    shootTimer += GetFrameTime();  //shoots under defined intervals
-    if(shootTimer >= shootInterval){
+Projectile* Gunner::useWeapon(int userX, int userY){  
+    if(!alive) return nullptr;
+    shootTimer += GetFrameTime();
+    if (shootTimer >= shootInterval){
         shootTimer = 0;
-        //return projectile object
+        Vector2 direction = {float(userX - hitbox.x),float(userY - hitbox.y)};
+        direction = Vector2Normalize(direction);
+        return new Projectile(direction.x * 5, direction.y * 5, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, 5, YELLOW, true);
     }
+    return nullptr;
 }
 
 void Gunner::draw(){
@@ -88,6 +90,25 @@ void Gunner::takeDamage(){
     if (health <= 0) {
         alive = false;
     }
+}
+
+Bird::Bird(double x, double y) : Enemy(x, y, 40, 20, 2){}
+
+void Bird::takeDamage(){
+    health--;
+    if (health <= 0){
+        alive = false;
+    }
+}
+
+void Bird::draw(){
+    if(alive){
+        DrawRectangleRec(hitbox, WHITE);
+    }
+}
+
+Projectile* Bird::useWeapon(int x, int y){
+    return nullptr;
 }
 
 void User::draw(){
