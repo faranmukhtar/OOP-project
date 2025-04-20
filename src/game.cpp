@@ -48,7 +48,6 @@ void Game::updateObstacles(){
 }
 
 void Game::despawnProjectiles(){
-
 }
 
 void Game::updateProjectiles(){
@@ -86,10 +85,10 @@ void Game::drawScreen(){
 }
 
 void Game::takeInput(){
-    if (IsKeyDown(KEY_RIGHT)&&user.getHitbox().x<SCREEN_WIDTH- user.getHitbox().width){ 
+    if (IsKeyDown(KEY_D)&&user.getHitbox().x<SCREEN_WIDTH- user.getHitbox().width){ 
         user.move(10,0);
     }
-    if (IsKeyDown(KEY_LEFT)&&user.getHitbox().x>0){
+    if (IsKeyDown(KEY_A)&&user.getHitbox().x>0){
         user.move(-10,0);
     }
     if(IsKeyPressed(KEY_SPACE)){
