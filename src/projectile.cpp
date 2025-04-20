@@ -9,8 +9,8 @@ Projectile::Projectile(double speedX, double SpeedY, double x, double y, double 
     this->color = color;
 }
 
-void Projectile::draw(){
-    DrawCircleV(center, (float)radius, color);  // Actual drawing call   
+void Projectile::draw(){ 
+    DrawCircleV(center, radius, color);
 }
 
 void Projectile::move(){
