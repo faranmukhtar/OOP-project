@@ -14,23 +14,10 @@ void User::move(int x, int y){
     hitbox.y = hitbox.y + y;
 }
 
-//Recheck later
-
 Projectile* User::useWeapon(int x, int y){
     Projectile* newBullet = new Projectile(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);
-        bullets.push_back(newBullet);
-        updateBullets();
-        return newBullet;
-   
+    return newBullet;
 }
-
-void Player::updateBullets() {
-    for (Projectile* bullet : bullets) {
-        bullet->move();
-        bullet->draw();
-    }
-}
-
 
 bool Player::isAlive(){
     return alive;
@@ -46,7 +33,7 @@ Rectangle Player::getHitbox(){
 
 void Bomber::move(int x, int y){
     if (!hasDroppedBomb){
-        if (hitbox.x < x) hitbox.x += moveSpeed;  //move above user
+        if (hitbox.x < x) hitbox.x += moveSpeed; 
         else if (hitbox.x > x) hitbox.x -= moveSpeed;
     }
     else{
@@ -59,7 +46,7 @@ void Bomber::move(int x, int y){
 
 Projectile* Bomber::useWeapon(int userX, int userY){
     if(!alive || hasDroppedBomb) return nullptr;
-    if(abs(hitbox.x - userX) < 5){   //drops bomb when above user
+    if(abs(hitbox.x - userX) < 5){ 
         hasDroppedBomb = true;
         return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE);
     }
@@ -76,7 +63,7 @@ void Bomber::takeDamage(){
     if(hasDroppedBomb) alive = false;
 }
 
-void Gunner::move(int x, int y){   //moves under defined intervals
+void Gunner::move(int x, int y){ 
     timer += GetFrameTime();   
     if (timer >= moveInterval){
         moveDirection*= -1;
@@ -131,7 +118,6 @@ Projectile* Flyer::useWeapon(int x, int y){
 
 void User::draw(){
     DrawRectangleRec(hitbox, RED);
-    updateBullets();
 }
 
 void User::jump() {

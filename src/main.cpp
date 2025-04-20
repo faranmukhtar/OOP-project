@@ -23,7 +23,7 @@ int main ()
 
 
 		game.spawnObstacles();
-		game.updateObstacles();
+		game.updateGame();
 
 		game.takeInput();
 

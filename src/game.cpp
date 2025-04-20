@@ -43,9 +43,27 @@ void Game::despawnObstacles(){
 void Game::updateObstacles(){
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->move(-10, 0);
-        cout << obstacles[i]->getHitbox().x << ", "<< obstacles[i]->getHitbox().y << endl;
     }
     despawnObstacles();
+}
+
+void Game::despawnProjectiles(){
+
+}
+
+void Game::updateProjectiles(){
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        enemyProjectiles[i]->move();
+    }
+    for(int i = 0; i < userProjectiles.size(); i++){
+        userProjectiles[i]->move();
+    }
+    despawnProjectiles();
+}
+
+void Game::updateGame(){
+    updateObstacles();
+    updateProjectiles();
 }
 
 void Game::checkGameOver(){
@@ -62,6 +80,9 @@ void Game::drawScreen(){
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->draw();
     }
+    for(int i = 0; i < userProjectiles.size(); i++){
+        userProjectiles[i]->draw();
+    }
 }
 
 void Game::takeInput(){
@@ -76,7 +97,7 @@ void Game::takeInput(){
     }
 
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-        user.useWeapon(5,5);
+        userProjectiles.push_back(user.useWeapon(5,5));
     }
     user.updatejump();
 }

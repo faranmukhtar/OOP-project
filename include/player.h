@@ -13,12 +13,10 @@ class Player{
     protected:
         Rectangle hitbox;
         int health;
-        std::vector<Projectile*> bullets;
         bool alive;
     public:
         Player(double x, double y, double width, double height, int health);
         virtual Projectile* useWeapon(int, int) = 0;
-        virtual void updateBullets();
         Rectangle getHitbox();
         bool isAlive();
         int getHealth();

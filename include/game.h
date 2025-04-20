@@ -53,6 +53,9 @@ class Game{
         void spawnObstacles();
         void despawnObstacles();
         void updateObstacles();
+        void despawnProjectiles();
+        void updateProjectiles();
+        void updateGame();
         void checkGameOver();
         void drawBackground();
         void drawScreen();
