@@ -16,8 +16,8 @@ void User::move(int x, int y){
 
 //Recheck later
 
-Projectile User::useWeapon(int x, int y){
-    Projectile newBullet(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);
+Projectile* User::useWeapon(int x, int y){
+    Projectile* newBullet = new Projectile(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);
         bullets.push_back(newBullet);
         updateBullets();
         return newBullet;
@@ -25,9 +25,9 @@ Projectile User::useWeapon(int x, int y){
 }
 
 void Player::updateBullets() {
-    for (Projectile& bullet : bullets) {
-        bullet.move();
-        bullet.draw();
+    for (Projectile* bullet : bullets) {
+        bullet->move();
+        bullet->draw();
     }
 }
 
@@ -61,7 +61,7 @@ Projectile* Bomber::useWeapon(int userX, int userY){
     if(!alive || hasDroppedBomb) return nullptr;
     if(abs(hitbox.x - userX) < 5){   //drops bomb when above user
         hasDroppedBomb = true;
-        return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE, true);
+        return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE);
     }
     return nullptr;
 }
@@ -92,7 +92,7 @@ Projectile* Gunner::useWeapon(int userX, int userY){
         shootTimer = 0;
         Vector2 direction = {float(userX - hitbox.x),float(userY - hitbox.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * 5, direction.y * 5, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, 5, YELLOW, true);
+        return new Projectile(direction.x * 5, direction.y * 5, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, 5, YELLOW);
     }
     return nullptr;
 }
@@ -110,22 +110,22 @@ void Gunner::takeDamage(){
     }
 }
 
-Bird::Bird(double x, double y) : Enemy(x, y, 40, 20, 2){}
+Flyer::Flyer(double x, double y) : Enemy(x, y, 40, 20, 2){}
 
-void Bird::takeDamage(){
+void Flyer::takeDamage(){
     health--;
     if (health <= 0){
         alive = false;
     }
 }
 
-void Bird::draw(){
+void Flyer::draw(){
     if(alive){
         DrawRectangleRec(hitbox, WHITE);
     }
 }
 
-Projectile* Bird::useWeapon(int x, int y){
+Projectile* Flyer::useWeapon(int x, int y){
     return nullptr;
 }
 

@@ -13,15 +13,16 @@ class Player{
     protected:
         Rectangle hitbox;
         int health;
-        std::vector<Projectile> bullets;
+        std::vector<Projectile*> bullets;
+        bool alive;
     public:
         Player(double x, double y, double width, double height, int health);
-        virtual Projectile useWeapon(int, int) = 0;
+        virtual Projectile* useWeapon(int, int) = 0;
         virtual void updateBullets();
         Rectangle getHitbox();
-
         bool isAlive();
         int getHealth();
+        virtual void move(int, int) = 0;
         virtual void draw() = 0;
         virtual void jump() =0;
 };
@@ -62,9 +63,9 @@ class Gunner : public Enemy{
         void move(int x, int y)override;
 };
 
-class Bird : public Enemy{
+class Flyer : public Enemy{
     public:
-        Bird(double x, double y);
+        Flyer(double x, double y);
         void move(int x, int y)override{}
         Projectile* useWeapon(int x, int y)override;
         void takeDamage() override;
@@ -73,9 +74,9 @@ class Bird : public Enemy{
 
 class User : public Player{
     private:
-    float jumpvelocity;
-    int jumps;
-    bool jumping;
+        float jumpvelocity;
+        int jumps;
+        bool jumping;
     public:
         User() : Player(50, GROUND_Y - 100, 50, 100, 100){
             jumpvelocity =0;
@@ -87,5 +88,5 @@ class User : public Player{
         void jump();
         void move(int, int);
         void updatejump();
-        Projectile useWeapon(int, int);
+        Projectile* useWeapon(int, int);
 };
