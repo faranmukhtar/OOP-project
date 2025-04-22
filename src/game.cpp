@@ -1,12 +1,10 @@
 #include "game.h"
 
-
 double Game::obstacleInterval = 5;
 double Game::obstacleTimer = 0;
 
-
 void Game::spawnEnemy(){
-
+    //enemies.push_back(new Bomber())
 }
 
 void Game::despawnEnemies(){
@@ -42,7 +40,7 @@ void Game::despawnObstacles(){
 
 void Game::updateObstacles(){
     for(int i = 0; i < obstacles.size(); i++){
-        obstacles[i]->move(-10, 0);
+        obstacles[i]->move(OBSTACLE_SPEED, 0);
     }
     despawnObstacles();
 }
@@ -86,18 +84,19 @@ void Game::drawScreen(){
 }
 
 void Game::takeInput(){
-    if (IsKeyDown(KEY_D)&&user.getHitbox().x<SCREEN_WIDTH- user.getHitbox().width){ 
-        user.move(10,0);
+    if (IsKeyDown(KEY_D) && user.getHitbox().x < SCREEN_WIDTH - user.getHitbox().width){ 
+        user.move(PLAYER_SPEED, 0);
     }
-    if (IsKeyDown(KEY_A)&&user.getHitbox().x>0){
-        user.move(-10,0);
+    if (IsKeyDown(KEY_A)&&user.getHitbox().x > 0){
+        user.move(-PLAYER_SPEED, 0);
     }
     if(IsKeyPressed(KEY_SPACE)){
         user.jump();
     }
 
-    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-        userProjectiles.push_back(user.useWeapon(5,5));
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+        Projectile* temp = user.useWeapon(GetMouseX(), GetMouseY());
+        if(temp != nullptr) userProjectiles.push_back(temp);
     }
     user.updatejump();
 }

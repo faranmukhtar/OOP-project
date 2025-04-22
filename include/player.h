@@ -9,62 +9,92 @@
 
 using namespace std;
 
+const double BOMBER_WIDTH = 40;
+const double BOMBER_HEIGHT = 40;
+const double BOMBER_HEALTH = 30;
+const double BOMBER_SPEED = 2;
+const double BOMBER_PROJECTILE_SPEEDY = 3;
+const double BOMBER_PROJECTILE_RADIUS = 10;
+const double BOMBER_PROJECTILE_DAMAGE = 25;
+
+const double GUNNER_WIDTH = 40;
+const double GUNNER_HEIGHT = 60;
+const double GUNNER_HEALTH = 60;
+const double GUNNER_MOVE_INTERVAL = 1.5;
+const double GUNNER_SHOOT_INTERVAL = 1.0;
+const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
+const double GUNNER_PROJECTILE_RADIUS = 5;
+const double GUNNER_PROJECTILE_DAMAGE = 19;
+
+const double FLYER_WIDTH = 40;
+const double FLYER_HEIGHT = 20;
+const double FLYER_HEALTH = 250;
+
+const double USER_X = 50;
+const double USER_WIDTH = 50;
+const double USER_HEIGHT = 100;
+const double USER_HEALTH = 100;
+const double USER_SHOOT_INTERVAL = 0.5;
+const double USER_PROJECTILE_SPEED_FACTOR = 5;
+const double USER_PROJECTILE_RADIUS = 5;
+const double USER_PROJECTILE_DAMAGE = 19;
+
+const double JUMP_VELOCITY = -15;
+const double ACCELARATION = 0.8;
+
 class Player{
     protected:
         Rectangle hitbox;
-        int health;
-        bool alive;
+        double health;
+        bool alive = true;
     public:
-        Player(double x, double y, double width, double height, int health);
-        virtual Projectile* useWeapon(int, int) = 0;
+        Player(double x, double y, double width, double height, double health);
+        virtual Projectile* useWeapon(double, double) = 0;
         Rectangle getHitbox();
         void takeDamage(double);
         bool isAlive();
-        int getHealth();
-        void setPosition(int, int);
-        virtual void move(int, int) = 0;
+        double getHealth();
+        void setPosition(double, double);
+        virtual void move(double, double) = 0;
         virtual void draw() = 0;
-        virtual void jump() =0;
+        virtual void jump() = 0;
 };
 
 class Enemy : public Player{
     protected:
         float timer;
     public:
-        Enemy(double x, double y, double width, double height, int health) :Player(x, y, width, height, health),timer(0){}
+        Enemy(double x, double y, double width, double height, double health) : Player(x, y, width, height, health),timer(0){}
 };
 
 class Bomber : public Enemy{
     private:
         bool hasDroppedBomb;
-        int moveSpeed;
-    
+        double moveSpeed;
     public:
-        Bomber(double x, double y) : Enemy(x, y, 40, 40, 1), hasDroppedBomb(false), moveSpeed(2){}
-        Projectile* useWeapon(int x, int y) override;
-        void move(int x, int y)override;
+        Bomber(double x, double y);
+        Projectile* useWeapon(double x, double y) override;
+        void move(double x, double y)override;
         void draw() override;
 };
 
 class Gunner : public Enemy{ 
     private:
-        int moveDirection;
-        const float moveInterval = 1.5f;
-        const float shootInterval = 1.0f;
+        double moveDirection;
         float shootTimer;
     
     public:
-        Gunner(double x, double y) : Enemy(x, y, 40, 60, 3), moveDirection(1), shootTimer(0){}
-        Projectile* useWeapon(int x, int y)override;
+        Gunner(double x, double y);
+        Projectile* useWeapon(double x, double y)override;
         void draw() override;
-        void move(int x, int y)override;
+        void move(double x, double y)override;
 };
 
 class Flyer : public Enemy{
     public:
         Flyer(double x, double y);
-        void move(int x, int y)override{}
-        Projectile* useWeapon(int x, int y)override;
+        void move(double x, double y)override{}
+        Projectile* useWeapon(double x, double y)override;
         void draw() override;
 };
 
@@ -74,19 +104,13 @@ class User : public Player{
         int jumps;
         bool onGround;
         bool onObstacle;
+        double shootTimer;
     public:
-        User() : Player(50, GROUND_Y - 100, 50, 100, 100){
-            jumpvelocity = 0;
-            jumps = 2;
-            onGround = true;
-            onObstacle = false;
-        }
-
-        //Might add more movement mechanics like dash, slide or double jump
+        User();
         void draw() override;
         void jump();
-        void move(int, int);
+        void move(double, double);
         void updatejump();
         void setOnObstacle(bool);
-        Projectile* useWeapon(int, int);
+        Projectile* useWeapon(double, double);
 };
