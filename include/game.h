@@ -61,6 +61,7 @@ class Game{
         void drawScreen();
         //invloves jumping, moving, shooting etc
         void takeInput();
-        void checkEnemyCollision();
-        void checkObstacleCollision();
+        void checkUserProjectilesCollision();
+        void checkEnemyProjectilesCollision();
+        void checkObstacleUserCollision();
 };

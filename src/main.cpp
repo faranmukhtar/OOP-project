@@ -21,11 +21,9 @@ int main ()
 		
 		ClearBackground(BLACK);
 
-
+		game.takeInput();
 		game.spawnObstacles();
 		game.updateGame();
-
-		game.takeInput();
 
 		game.drawScreen();
 		EndDrawing();

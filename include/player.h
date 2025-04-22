@@ -18,8 +18,10 @@ class Player{
         Player(double x, double y, double width, double height, int health);
         virtual Projectile* useWeapon(int, int) = 0;
         Rectangle getHitbox();
+        void takeDamage(double);
         bool isAlive();
         int getHealth();
+        void setPosition(int, int);
         virtual void move(int, int) = 0;
         virtual void draw() = 0;
         virtual void jump() =0;
@@ -30,7 +32,6 @@ class Enemy : public Player{
         float timer;
     public:
         Enemy(double x, double y, double width, double height, int health) :Player(x, y, width, height, health),timer(0){}
-        virtual void takeDamage() = 0;
 };
 
 class Bomber : public Enemy{
@@ -42,7 +43,6 @@ class Bomber : public Enemy{
         Bomber(double x, double y) : Enemy(x, y, 40, 40, 1), hasDroppedBomb(false), moveSpeed(2){}
         Projectile* useWeapon(int x, int y) override;
         void move(int x, int y)override;
-        void takeDamage()override;
         void draw() override;
 };
 
@@ -57,7 +57,6 @@ class Gunner : public Enemy{
         Gunner(double x, double y) : Enemy(x, y, 40, 60, 3), moveDirection(1), shootTimer(0){}
         Projectile* useWeapon(int x, int y)override;
         void draw() override;
-        void takeDamage()override;
         void move(int x, int y)override;
 };
 
@@ -66,7 +65,6 @@ class Flyer : public Enemy{
         Flyer(double x, double y);
         void move(int x, int y)override{}
         Projectile* useWeapon(int x, int y)override;
-        void takeDamage() override;
         void draw() override;
 };
 
@@ -74,11 +72,14 @@ class User : public Player{
     private:
         float jumpvelocity;
         int jumps;
-        bool jumping;
+        bool onGround;
+        bool onObstacle;
     public:
         User() : Player(50, GROUND_Y - 100, 50, 100, 100){
-            jumpvelocity =0;
+            jumpvelocity = 0;
             jumps = 2;
+            onGround = true;
+            onObstacle = false;
         }
 
         //Might add more movement mechanics like dash, slide or double jump
@@ -86,5 +87,6 @@ class User : public Player{
         void jump();
         void move(int, int);
         void updatejump();
+        void setOnObstacle(bool);
         Projectile* useWeapon(int, int);
 };

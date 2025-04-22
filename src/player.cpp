@@ -9,14 +9,13 @@ Player::Player(double x, double y, double width, double height, int health){
     this->hitbox.width = width;
 };
 
-void User::move(int x, int y){ 
-    hitbox.x =hitbox.x + x;
-    hitbox.y = hitbox.y + y;
+void Player::takeDamage(double val){
+    health -= val;
 }
 
-Projectile* User::useWeapon(int x, int y){
-    Projectile* newBullet = new Projectile(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);
-    return newBullet;
+void Player::setPosition(int x, int y){
+    hitbox.x = x;
+    hitbox.y = y;
 }
 
 bool Player::isAlive(){
@@ -48,7 +47,7 @@ Projectile* Bomber::useWeapon(int userX, int userY){
     if(!alive || hasDroppedBomb) return nullptr;
     if(abs(hitbox.x - userX) < 5){ 
         hasDroppedBomb = true;
-        return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE);
+        return new Projectile(0, 3, hitbox.x, hitbox.y, 10, PURPLE, 25);
     }
     return nullptr;
 }
@@ -57,10 +56,6 @@ void Bomber::draw(){
     if(alive){
         DrawRectangleRec(hitbox, GREEN);
     }
-}
-
-void Bomber::takeDamage(){
-    if(hasDroppedBomb) alive = false;
 }
 
 void Gunner::move(int x, int y){ 
@@ -79,7 +74,7 @@ Projectile* Gunner::useWeapon(int userX, int userY){
         shootTimer = 0;
         Vector2 direction = {float(userX - hitbox.x),float(userY - hitbox.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * 5, direction.y * 5, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, 5, YELLOW);
+        return new Projectile(direction.x * 5, direction.y * 5, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, 5, YELLOW, 10);
     }
     return nullptr;
 }
@@ -90,21 +85,7 @@ void Gunner::draw(){
     }
 }
 
-void Gunner::takeDamage(){
-    health--;
-    if (health <= 0) {
-        alive = false;
-    }
-}
-
 Flyer::Flyer(double x, double y) : Enemy(x, y, 40, 20, 2){}
-
-void Flyer::takeDamage(){
-    health--;
-    if (health <= 0){
-        alive = false;
-    }
-}
 
 void Flyer::draw(){
     if(alive){
@@ -116,6 +97,20 @@ Projectile* Flyer::useWeapon(int x, int y){
     return nullptr;
 }
 
+void User::move(int x, int y){ 
+    hitbox.x =hitbox.x + x;
+    hitbox.y = hitbox.y + y;
+}
+
+Projectile* User::useWeapon(int x, int y){
+    Projectile* newBullet = new Projectile(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW, 50);
+    return newBullet;
+}
+
+void User::setOnObstacle(bool val){
+    onObstacle = val;
+}
+
 void User::draw(){
     DrawRectangleRec(hitbox, RED);
 }
@@ -123,20 +118,28 @@ void User::draw(){
 void User::jump() {
     if (jumps>0) {
         jumpvelocity = -15; 
-        jumping = true;
         jumps--;
+        onGround = false;
+        onObstacle = false;
     }
 }
 
 void User::updatejump() {
-    jumpvelocity+= 0.8; 
-    hitbox.y += jumpvelocity;
+    cout << onGround << ", " << onObstacle << endl;
+    if(!onGround && !onObstacle){
+        jumpvelocity+= 0.8; 
+        hitbox.y += jumpvelocity;
 
-    if (hitbox.y >= GROUND_Y - hitbox.height) {
-        hitbox.y = GROUND_Y - hitbox.height;
+        if (hitbox.y >= GROUND_Y - hitbox.height) {
+            hitbox.y = GROUND_Y - hitbox.height;
+            jumpvelocity = 0;
+            jumps =2;
+            onGround = true;
+        }
+    }
+    else if(onObstacle){
         jumpvelocity = 0;
-        jumping = false;
-        jumps =2;
+        jumps = 2;
     }
 }
 

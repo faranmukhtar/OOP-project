@@ -1,12 +1,13 @@
 #include "projectile.h"
 
-Projectile::Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color){
+Projectile::Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color, double damage){
     speed.x = speedX;
     speed.y = SpeedY;
     center.x = x;
     center.y = y;
     this->radius = radius;
     this->color = color;
+    this->damage = damage;
 }
 
 void Projectile::draw(){ 
@@ -21,6 +22,10 @@ void Projectile::move(){
 void Projectile::adjustSpeed(double x, double y){
     speed.x = x;
     speed.y = y;
+}
+
+double Projectile::getDamage(){
+    return damage;
 }
 
 Vector2 Projectile::getSpeed(){

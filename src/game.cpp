@@ -63,6 +63,7 @@ void Game::updateProjectiles(){
 void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
+    checkObstacleUserCollision();
 }
 
 void Game::checkGameOver(){
@@ -101,10 +102,52 @@ void Game::takeInput(){
     user.updatejump();
 }
 
-void Game::checkEnemyCollision(){
-
+void Game::checkUserProjectilesCollision(){
+    for(int i = 0; i < enemies.size(); i++){
+        Rectangle enemyHitbox = enemies[i]->getHitbox();
+        for(int j = 0; j < userProjectiles.size(); j++){
+            if(CheckCollisionCircleRec(userProjectiles[j]->getCenter(), userProjectiles[j]->getRadius(), enemyHitbox)){
+                enemies[i]->takeDamage(userProjectiles[j]->getDamage());
+            }
+        }
+    }
 }
 
-void Game::checkObstacleCollision(){
-    
+void Game::checkEnemyProjectilesCollision(){
+    Rectangle userHitbox = user.getHitbox();
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
+            user.takeDamage(enemyProjectiles[i]->getDamage());
+        }
+    }
+}
+
+void Game::checkObstacleUserCollision(){
+    Rectangle userHitbox = user.getHitbox();
+    bool obstacleY = false;
+    for(int i = 0; i < obstacles.size(); i++){
+        Rectangle obHitbox = obstacles[i]->getHitbox();
+        
+        if((userHitbox.x + userHitbox.width >= obHitbox.x &&
+            userHitbox.x < obHitbox.x) &&
+           (userHitbox.y + userHitbox.height > obHitbox.y &&
+            userHitbox.y < obHitbox.y + obHitbox.height) &&
+            (userHitbox.y + userHitbox.height) - obHitbox.y > 10){
+
+            user.setPosition(obHitbox.x - userHitbox.width, userHitbox.y);
+            userHitbox = user.getHitbox();
+
+        }
+
+        if((userHitbox.y + userHitbox.height >= obHitbox.y &&
+            userHitbox.y < obHitbox.y) &&
+           (userHitbox.x + userHitbox.width > obHitbox.x &&
+            userHitbox.x < obHitbox.x + obHitbox.width)){
+
+            user.setPosition(userHitbox.x, obHitbox.y - userHitbox.height);
+            obstacleY = true;
+
+        }
+    }
+    user.setOnObstacle(obstacleY);
 }
