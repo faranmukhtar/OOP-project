@@ -30,7 +30,9 @@ int main ()
 		game.takeInput();
 		game.spawnObstacles();
 		game.updateGame();
-
+		game.displaygameover();
+		game.displayscores();
+		
 		game.drawScreen();
 		EndDrawing();
 	}
