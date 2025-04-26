@@ -4,10 +4,30 @@ double Game::obstacleInterval = 5;
 double Game::obstacleTimer = 0;
 
 void Game::spawnEnemy(){
-    //enemies.push_back(new Bomber())
+    enemies.push_back(new Bomber(SCREEN_WIDTH / 2, 100));
+    enemies.push_back(new Gunner(SCREEN_WIDTH - 200, 200));
+    enemies.push_back(new Flyer(SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2));
 }
 
 void Game::despawnEnemies(){
+    vector<Enemy*> temp;
+    for(int i = 0; i < enemies.size(); i++){
+        Rectangle hitbox = enemies[i]->getHitbox();
+        if(!enemies[i]->isAlive() || hitbox.y + hitbox.height < 0 || hitbox.y > SCREEN_HEIGHT || hitbox.x + hitbox.width < 0 || hitbox.x > SCREEN_WIDTH){
+            delete enemies[i];
+        }else{
+            temp.push_back(enemies[i]);
+        }
+    }
+    enemies = temp;
+}
+
+void Game::updateEnemies(){
+    for(int i = 0; i < enemies.size(); i++){
+        enemies[i]->move(1, 1);
+        Projectile* temp = enemies[i]->useWeapon(user.getHitbox().x, user.getHitbox().y);
+        if(temp != nullptr) enemyProjectiles.push_back(temp);
+    }
 }
 
 void Game::spawnObstacles(){
@@ -40,12 +60,22 @@ void Game::despawnObstacles(){
 
 void Game::updateObstacles(){
     for(int i = 0; i < obstacles.size(); i++){
-        obstacles[i]->move(OBSTACLE_SPEED, 0);
+        obstacles[i]->move(-OBSTACLE_SPEED, 0);
     }
-    despawnObstacles();
 }
 
 void Game::despawnProjectiles(){
+    vector<Projectile*> temp;
+    for(int i = 0; i < userProjectiles.size(); i++){
+        Vector2 center = userProjectiles[i]->getCenter();
+        double radius = userProjectiles[i]->getRadius();
+        if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
+            delete userProjectiles[i];
+        }else{
+            temp.push_back(userProjectiles[i]);
+        }
+    }
+    userProjectiles = temp;
 }
 
 void Game::updateProjectiles(){
@@ -61,7 +91,11 @@ void Game::updateProjectiles(){
 void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
+    updateEnemies();
     checkObstacleUserCollision();
+    checkUserProjectilesCollision();
+    despawnObstacles();
+    despawnEnemies();
 }
 
 void Game::checkGameOver(){
@@ -80,6 +114,12 @@ void Game::drawScreen(){
     }
     for(int i = 0; i < userProjectiles.size(); i++){
         userProjectiles[i]->draw();
+    }
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        enemyProjectiles[i]->draw();
+    }
+    for(int i = 0; i < enemies.size(); i++){
+        enemies[i]->draw();
     }
 }
 
@@ -107,6 +147,7 @@ void Game::checkUserProjectilesCollision(){
         for(int j = 0; j < userProjectiles.size(); j++){
             if(CheckCollisionCircleRec(userProjectiles[j]->getCenter(), userProjectiles[j]->getRadius(), enemyHitbox)){
                 enemies[i]->takeDamage(userProjectiles[j]->getDamage());
+                userProjectiles[j]->setPosition(-1, -1);
             }
         }
     }

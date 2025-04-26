@@ -20,4 +20,5 @@ class Projectile{
         Vector2 getSpeed();
         double getRadius();
         Color getColor();
+        void setPosition(double, double);
 };

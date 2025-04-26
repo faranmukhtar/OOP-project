@@ -21,7 +21,7 @@ const double GUNNER_WIDTH = 40;
 const double GUNNER_HEIGHT = 60;
 const double GUNNER_HEALTH = 60;
 const double GUNNER_MOVE_INTERVAL = 1.5;
-const double GUNNER_SHOOT_INTERVAL = 1.0;
+const double GUNNER_SHOOT_INTERVAL = 2.0;
 const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
 const double GUNNER_PROJECTILE_RADIUS = 5;
 const double GUNNER_PROJECTILE_DAMAGE = 19;
@@ -35,7 +35,7 @@ const double USER_WIDTH = 50;
 const double USER_HEIGHT = 100;
 const double USER_HEALTH = 100;
 const double USER_SHOOT_INTERVAL = 0.5;
-const double USER_PROJECTILE_SPEED_FACTOR = 5;
+const double USER_PROJECTILE_SPEED_FACTOR = 8;
 const double USER_PROJECTILE_RADIUS = 5;
 const double USER_PROJECTILE_DAMAGE = 19;
 
@@ -57,7 +57,6 @@ class Player{
         void setPosition(double, double);
         virtual void move(double, double) = 0;
         virtual void draw() = 0;
-        virtual void jump() = 0;
 };
 
 class Enemy : public Player{

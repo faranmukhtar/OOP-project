@@ -24,6 +24,11 @@ void Projectile::adjustSpeed(double x, double y){
     speed.y = y;
 }
 
+void Projectile::setPosition(double x, double y){
+    center.x = x;
+    center.y = y;
+}
+
 double Projectile::getDamage(){
     return damage;
 }

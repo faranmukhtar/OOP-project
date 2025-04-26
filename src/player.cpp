@@ -19,7 +19,7 @@ void Player::setPosition(double x, double y){
 }
 
 bool Player::isAlive(){
-    return alive;
+    return health > 0;
 }
 
 double Player::getHealth(){
@@ -119,7 +119,7 @@ Projectile* User::useWeapon(double mouseX, double mouseY){
         shootTimer = GetTime();
         Vector2 direction = {float(mouseX - hitbox.x),float(mouseY - hitbox.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, USER_PROJECTILE_RADIUS, YELLOW, USER_PROJECTILE_DAMAGE);
+        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, hitbox.x, hitbox.y, USER_PROJECTILE_RADIUS, YELLOW, USER_PROJECTILE_DAMAGE);
     }
     return nullptr;
 }

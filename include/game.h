@@ -36,7 +36,6 @@ const string OBSTACLE_PATTERN[][3][3] = {{{"O", "O", "O"},
                                           {"X", "X", "X"}}};
 
 const double PLAYER_SPEED = 10;
-const double OBSTACLE_LENGTH = 50;
 const double OBSTACLE_SPEED = 10;
 
 //Game logic goes here
@@ -54,6 +53,7 @@ class Game{
 
         void spawnEnemy();
         void despawnEnemies();
+        void updateEnemies();
         void spawnObstacles();
         void despawnObstacles();
         void updateObstacles();
