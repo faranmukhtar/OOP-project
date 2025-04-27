@@ -5,6 +5,7 @@
 #include "player.h"
 #include "obstacle.h"
 #include "projectile.h"
+#include <fstream>
 #include <vector>
 
 const string OBSTACLE_PATTERN[][3][3] = {{{"O", "O", "O"},
@@ -46,12 +47,15 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
+        int score = 0;
+        int Highscore = -99;
         double obstacleInterval;
         double obstacleTimer;
         double gunnerInterval;
         double gunnerTimer;
         double bomberInterval;
         double bomberTimer;
+
     public:
         Game();
         void spawnEntities();
@@ -70,4 +74,6 @@ class Game{
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
         void checkObstacleUserCollision();
+        void displaygameover();
+        void displayscores();
 };

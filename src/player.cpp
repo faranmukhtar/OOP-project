@@ -67,6 +67,7 @@ void Bomber::draw(){
     if(alive){
         DrawRectangleRec(hitbox, GREEN);
     }
+
 }
 
 Gunner::Gunner(double x, double y) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"), moveDirection(1), shootTimer(0){}
@@ -142,6 +143,7 @@ void User::setOnObstacle(bool val){
 
 void User::draw(){
     DrawRectangleRec(hitbox, RED);
+    
 }
 
 void User::jump() {
@@ -170,6 +172,8 @@ void User::updatejump() {
         jumps = 2;
     }
 }
+
+
 
 //Enemy made by Faran decided to comment it for later
 

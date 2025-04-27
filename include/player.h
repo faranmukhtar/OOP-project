@@ -110,6 +110,7 @@ class User : public Player{
         bool onGround;
         bool onObstacle;
         double shootTimer;
+        int score;
     public:
         User();
         void draw() override;

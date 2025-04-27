@@ -243,5 +243,47 @@ void Game::checkObstacleUserCollision(){
 
         }
     }
+    
     user.setOnObstacle(obstacleY);
+}
+
+void Game::displaygameover(){
+    score = 500;
+    DrawText("Game Over", 380, 200, 40, YELLOW);
+    string scored = "Score: "+std::to_string(score);
+    string Hscore = "High Score: "+std::to_string(Highscore);
+    DrawText( scored.c_str(), 380, 250, 20, BLUE);
+    DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
+    fstream Scores("Scores.dat",ios::binary|ios::out);
+    if(!Scores){
+        cout<<"Error opening Score file"<<endl;
+    }
+    else{
+        if(score >Highscore){
+            Scores.write(reinterpret_cast<char*>(&score),sizeof(score));
+            Highscore = score;
+        }
+    }
+
+    Scores.close();
+}
+
+
+
+void Game::displayscores() {
+    ifstream Scores("Scores.dat", ios::binary | ios::in);
+    if (!Scores) {
+        cout << "Error opening Score file" << endl;
+        Highscore = 0;
+    } else {
+        if (Scores.read(reinterpret_cast<char*>(&Highscore), sizeof(Highscore))) {
+           
+        } else {
+            Highscore = 0; 
+        }
+        Scores.close();
+    }
+
+    string scoreText = "HIGH SCORE: " + std::to_string(Highscore);
+    DrawText(scoreText.c_str(), 380, 200, 40, YELLOW);
 }

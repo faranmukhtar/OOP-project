@@ -24,7 +24,9 @@ int main ()
 		game.takeInput();
 
 		game.updateGame();
-
+		game.displaygameover();
+		game.displayscores();
+		
 		game.drawScreen();
 		EndDrawing();
 	}
