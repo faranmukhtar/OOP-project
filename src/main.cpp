@@ -24,9 +24,10 @@ int main ()
 		game.takeInput();
 
 		game.updateGame();
-		game.displaygameover();
-		game.displayscores();
-		
+		if(game.checkGameOver()){
+			game.loopGameOver();
+		}
+
 		game.drawScreen();
 		EndDrawing();
 	}

@@ -1,14 +1,5 @@
 #include "game.h"
 
-Game::Game(){
-    obstacleInterval = 5;
-    obstacleTimer = 0;
-    gunnerTimer = 0;
-    gunnerInterval = 10;
-    bomberTimer = 0;
-    bomberInterval = 5;
-}
-
 void Game::spawnEntities(){
     obstacleTimer += GetFrameTime();
     gunnerTimer += GetFrameTime();
@@ -48,6 +39,7 @@ void Game::despawnEnemies(){
         Rectangle hitbox = enemies[i]->getHitbox();
         if(!enemies[i]->isAlive() || hitbox.y + hitbox.height < 0 || hitbox.x + hitbox.width < 0){
             delete enemies[i];
+            enemies[i] = nullptr;
         }else{
             temp.push_back(enemies[i]);
         }
@@ -89,6 +81,7 @@ void Game::despawnObstacles(){
         Rectangle hitbox = obstacles[i]->getHitbox();
         if(hitbox.x + hitbox.width < 0){
             delete obstacles[i];
+            obstacles[i] = nullptr;
         }else{
             temp.push_back(obstacles[i]);
         }
@@ -109,6 +102,7 @@ void Game::despawnProjectiles(){
         double radius = userProjectiles[i]->getRadius();
         if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
             delete userProjectiles[i];
+            userProjectiles[i] = nullptr;
         }else{
             temp1.push_back(userProjectiles[i]);
         }
@@ -151,8 +145,19 @@ void Game::updateGame(){
     despawnProjectiles();
 }
 
-void Game::checkGameOver(){
+void Game::loopGameOver(){
+    bool keyPressed = false;
+    BeginDrawing();
+    ClearBackground(BLACK);
+    displayGameOver();
+    EndDrawing();
+    while(!keyPressed || !WindowShouldClose()){
+        keyPressed = IsKeyPressed(KEY_SPACE);
+    }
+}
 
+bool Game::checkGameOver(){
+    return (!user.isAlive()) || user.getHitbox().x + user.getHitbox().width < 0;
 }
 
 void Game::drawBackground(){
@@ -247,8 +252,7 @@ void Game::checkObstacleUserCollision(){
     user.setOnObstacle(obstacleY);
 }
 
-void Game::displaygameover(){
-    score = 500;
+void Game::displayGameOver(){
     DrawText("Game Over", 380, 200, 40, YELLOW);
     string scored = "Score: "+std::to_string(score);
     string Hscore = "High Score: "+std::to_string(Highscore);
@@ -270,7 +274,7 @@ void Game::displaygameover(){
 
 
 
-void Game::displayscores() {
+void Game::displayScores() {
     ifstream Scores("Scores.dat", ios::binary | ios::in);
     if (!Scores) {
         cout << "Error opening Score file" << endl;

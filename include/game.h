@@ -49,15 +49,14 @@ class Game{
         vector<Projectile*> userProjectiles;
         int score = 0;
         int Highscore = -99;
-        double obstacleInterval;
-        double obstacleTimer;
-        double gunnerInterval;
-        double gunnerTimer;
-        double bomberInterval;
-        double bomberTimer;
+        const double obstacleInterval = 5;
+        double obstacleTimer = 0;
+        const double gunnerInterval = 15;
+        double gunnerTimer = 0;
+        const double bomberInterval = 10;
+        double bomberTimer = 0;
 
     public:
-        Game();
         void spawnEntities();
         void despawnEnemies();
         void updateEnemies();
@@ -67,13 +66,14 @@ class Game{
         void despawnProjectiles();
         void updateProjectiles();
         void updateGame();
-        void checkGameOver();
+        void loopGameOver();
+        bool checkGameOver();
         void drawBackground();
         void drawScreen();
         void takeInput();
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
         void checkObstacleUserCollision();
-        void displaygameover();
-        void displayscores();
+        void displayGameOver();
+        void displayScores();
 };
