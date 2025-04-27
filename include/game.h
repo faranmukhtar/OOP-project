@@ -47,14 +47,18 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
-        int score=0;
-        int Highscore=-99;
-        
-    public:
-        static double obstacleInterval;
-        static double obstacleTimer;
+        int score = 0;
+        int Highscore = -99;
+        double obstacleInterval;
+        double obstacleTimer;
+        double gunnerInterval;
+        double gunnerTimer;
+        double bomberInterval;
+        double bomberTimer;
 
-        void spawnEnemy();
+    public:
+        Game();
+        void spawnEntities();
         void despawnEnemies();
         void updateEnemies();
         void spawnObstacles();
@@ -66,7 +70,6 @@ class Game{
         void checkGameOver();
         void drawBackground();
         void drawScreen();
-        //invloves jumping, moving, shooting etc
         void takeInput();
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
