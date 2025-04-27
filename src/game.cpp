@@ -1,19 +1,52 @@
 #include "game.h"
 
-double Game::obstacleInterval = 5;
-double Game::obstacleTimer = 0;
+Game::Game(){
+    obstacleInterval = 5;
+    obstacleTimer = 0;
+    gunnerTimer = 0;
+    gunnerInterval = 10;
+    bomberTimer = 0;
+    bomberInterval = 5;
+}
 
-void Game::spawnEnemy(){
-    enemies.push_back(new Bomber(SCREEN_WIDTH / 2, 100));
-    enemies.push_back(new Gunner(SCREEN_WIDTH - 200, 200));
-    enemies.push_back(new Flyer(SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2));
+void Game::spawnEntities(){
+    obstacleTimer += GetFrameTime();
+    gunnerTimer += GetFrameTime();
+    bomberTimer += GetFrameTime();
+
+    if(gunnerTimer > gunnerInterval){
+        gunnerTimer = 0;
+        enemies.push_back(new Gunner(SCREEN_WIDTH + 200, 130));
+    }
+
+    if(bomberTimer > bomberInterval){
+        bomberTimer = 0;
+        int randInt = rand() % 3;
+        enemies.push_back(new Bomber(SCREEN_WIDTH + 80, 80));
+        enemies.push_back(new Bomber(SCREEN_WIDTH + 160, 80));
+        if(randInt >= 1){
+            enemies.push_back(new Bomber(SCREEN_WIDTH + 240, 80));
+        }
+        if(randInt == 2){
+            enemies.push_back(new Bomber(SCREEN_WIDTH + 320, 80));
+        }
+    }
+
+    if(obstacleTimer > obstacleInterval){
+        if(rand() % 4 == 0){
+            enemies.push_back(new Flyer(SCREEN_WIDTH + 200, GROUND_Y - (rand() % 100) - 50));
+        }else{
+            spawnObstacles();
+        }
+        obstacleTimer = 0;
+    }
 }
 
 void Game::despawnEnemies(){
     vector<Enemy*> temp;
     for(int i = 0; i < enemies.size(); i++){
         Rectangle hitbox = enemies[i]->getHitbox();
-        if(!enemies[i]->isAlive() || hitbox.y + hitbox.height < 0 || hitbox.y > SCREEN_HEIGHT || hitbox.x + hitbox.width < 0 || hitbox.x > SCREEN_WIDTH){
+        if(!enemies[i]->isAlive() || hitbox.y + hitbox.height < 0 || hitbox.x + hitbox.width < 0){
             delete enemies[i];
         }else{
             temp.push_back(enemies[i]);
@@ -24,22 +57,27 @@ void Game::despawnEnemies(){
 
 void Game::updateEnemies(){
     for(int i = 0; i < enemies.size(); i++){
-        enemies[i]->move(1, 1);
-        Projectile* temp = enemies[i]->useWeapon(user.getHitbox().x, user.getHitbox().y);
+        enemies[i]->move();
+        Projectile* temp = nullptr;
+        if(enemies[i]->getType() == "bomber"){
+            temp = enemies[i]->useWeapon(0, 0);
+        }
+        if(enemies[i]->getType() == "flyer"){
+            if(CheckCollisionRecs(enemies[i]->getHitbox(), user.getHitbox())){
+                user.takeDamage(enemies[i]->getDamage());
+                enemies[i]->takeDamage(1000);
+            }
+        }
         if(temp != nullptr) enemyProjectiles.push_back(temp);
     }
 }
 
 void Game::spawnObstacles(){
-    obstacleTimer += GetFrameTime();
-    if(obstacleTimer > obstacleInterval){
-        obstacleTimer = 0;
-        int obstaclesNumber = rand() % 7;
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                if(OBSTACLE_PATTERN[obstaclesNumber][i][j] == "X"){
-                    obstacles.push_back(new Obstacle(SCREEN_WIDTH + GROUND_Y + j * OBSTACLE_LENGTH, GROUND_Y + (i - 3) * OBSTACLE_LENGTH));
-                }
+    int obstaclesNumber = rand() % 7;
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if(OBSTACLE_PATTERN[obstaclesNumber][i][j] == "X"){
+                obstacles.push_back(new Obstacle(SCREEN_WIDTH + GROUND_Y + j * OBSTACLE_LENGTH, GROUND_Y + (i - 3) * OBSTACLE_LENGTH));
             }
         }
     }
@@ -65,17 +103,30 @@ void Game::updateObstacles(){
 }
 
 void Game::despawnProjectiles(){
-    vector<Projectile*> temp;
+    vector<Projectile*> temp1;
     for(int i = 0; i < userProjectiles.size(); i++){
         Vector2 center = userProjectiles[i]->getCenter();
         double radius = userProjectiles[i]->getRadius();
         if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
             delete userProjectiles[i];
         }else{
-            temp.push_back(userProjectiles[i]);
+            temp1.push_back(userProjectiles[i]);
         }
     }
-    userProjectiles = temp;
+    userProjectiles = temp1;
+
+    vector<Projectile*> temp2;
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        Vector2 center = enemyProjectiles[i]->getCenter();
+        double radius = enemyProjectiles[i]->getRadius();
+        if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
+            delete enemyProjectiles[i];
+            enemyProjectiles[i] = nullptr;
+        }else{
+            temp2.push_back(enemyProjectiles[i]);
+        }
+    }
+    enemyProjectiles = temp2;
 }
 
 void Game::updateProjectiles(){
@@ -85,17 +136,19 @@ void Game::updateProjectiles(){
     for(int i = 0; i < userProjectiles.size(); i++){
         userProjectiles[i]->move();
     }
-    despawnProjectiles();
 }
 
 void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
     updateEnemies();
+    spawnEntities();
     checkObstacleUserCollision();
     checkUserProjectilesCollision();
+    checkEnemyProjectilesCollision();
     despawnObstacles();
     despawnEnemies();
+    despawnProjectiles();
 }
 
 void Game::checkGameOver(){
@@ -147,7 +200,7 @@ void Game::checkUserProjectilesCollision(){
         for(int j = 0; j < userProjectiles.size(); j++){
             if(CheckCollisionCircleRec(userProjectiles[j]->getCenter(), userProjectiles[j]->getRadius(), enemyHitbox)){
                 enemies[i]->takeDamage(userProjectiles[j]->getDamage());
-                userProjectiles[j]->setPosition(-1, -1);
+                userProjectiles[j]->setPosition(-30, -30);
             }
         }
     }
@@ -158,6 +211,7 @@ void Game::checkEnemyProjectilesCollision(){
     for(int i = 0; i < enemyProjectiles.size(); i++){
         if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
             user.takeDamage(enemyProjectiles[i]->getDamage());
+            enemyProjectiles[i]->setPosition(-30, -30);
         }
     }
 }

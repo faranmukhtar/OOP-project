@@ -14,7 +14,6 @@ int main ()
 	SetTargetFPS(60);
 
 	SearchAndSetResourceDir("resources");
-	bool flag = false;
 	
 	while (!WindowShouldClose())
 	{
@@ -22,13 +21,8 @@ int main ()
 		
 		ClearBackground(BLACK);
 
-		if(!flag){
-			game.spawnEnemy();
-			flag = true;
-		}
-
 		game.takeInput();
-		game.spawnObstacles();
+
 		game.updateGame();
 
 		game.drawScreen();

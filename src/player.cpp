@@ -1,12 +1,13 @@
 #include "player.h"
 
 
-Player::Player(double x, double y, double width, double height, double health){
+Player::Player(double x, double y, double width, double height, double health, double damage){
     this->health = health;
     this->hitbox.x = x;
     this->hitbox.y = y;
     this->hitbox.height = height;
     this->hitbox.width = width;
+    this->damage = damage;
 };
 
 void Player::takeDamage(double val){
@@ -22,6 +23,10 @@ bool Player::isAlive(){
     return health > 0;
 }
 
+double Player::getDamage(){
+    return damage;
+}
+
 double Player::getHealth(){
     return health;
 }
@@ -30,26 +35,30 @@ Rectangle Player::getHitbox(){
     return hitbox;
 }
 
-Bomber::Bomber(double x, double y) : Enemy(x, y, BOMBER_WIDTH, BOMBER_HEIGHT, BOMBER_HEALTH), hasDroppedBomb(false), moveSpeed(BOMBER_SPEED){}
+Enemy::Enemy(double x, double y, double width, double height, double health, double damage, string type) : Player(x, y, width, height, health, damage), timer(0), type(type){}
 
-void Bomber::move(double x, double y){
+string Enemy::getType(){
+    return type;
+}
+
+Bomber::Bomber(double x, double y) : Enemy(x, y, BOMBER_WIDTH, BOMBER_HEIGHT, BOMBER_HEALTH, BOMBER_PROJECTILE_DAMAGE, "bomber"), hasDroppedBomb(false){
+    targetX = ((rand() % 10) + 0.5) * SCREEN_WIDTH / 10;
+}
+
+void Bomber::move(){
     if (!hasDroppedBomb){
-        if (hitbox.x < x) hitbox.x += moveSpeed; 
-        else if (hitbox.x > x) hitbox.x -= moveSpeed;
+        hitbox.x -= BOMBER_SPEED;
     }
     else{
-        hitbox.y -= moveSpeed;  
-        if (hitbox.y + hitbox.height < 0){
-            alive = false;
-        }
+        hitbox.y -= BOMBER_SPEED;
     }
 }
 
-Projectile* Bomber::useWeapon(double userX, double userY){
-    if(!alive || hasDroppedBomb) return nullptr;
-    if(abs(hitbox.x - userX) < 5){ 
+Projectile* Bomber::useWeapon(double, double){
+    if(hasDroppedBomb) return nullptr;
+    if(hitbox.x - targetX < 0){ 
         hasDroppedBomb = true;
-        return new Projectile(0, BOMBER_PROJECTILE_SPEEDY, hitbox.x, hitbox.y, BOMBER_PROJECTILE_RADIUS, PURPLE, BOMBER_PROJECTILE_DAMAGE);
+        return new Projectile(0, BOMBER_PROJECTILE_SPEEDY, hitbox.x, hitbox.y, BOMBER_PROJECTILE_RADIUS, PURPLE, damage);
     }
     return nullptr;
 }
@@ -60,9 +69,9 @@ void Bomber::draw(){
     }
 }
 
-Gunner::Gunner(double x, double y) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH), moveDirection(1), shootTimer(0){}
+Gunner::Gunner(double x, double y) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"), moveDirection(1), shootTimer(0){}
 
-void Gunner::move(double x, double y){ 
+void Gunner::move(){ 
     timer += GetFrameTime();   
     if (timer >= GUNNER_MOVE_INTERVAL){
         moveDirection*= -1;
@@ -72,13 +81,12 @@ void Gunner::move(double x, double y){
 }
 
 Projectile* Gunner::useWeapon(double userX, double userY){  
-    if(!alive) return nullptr;
     shootTimer += GetFrameTime();
     if (shootTimer >= GUNNER_SHOOT_INTERVAL){
         shootTimer = 0;
         Vector2 direction = {float(userX - hitbox.x),float(userY - hitbox.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * GUNNER_PROJECTILE_SPEED_FACTOR, direction.y * GUNNER_PROJECTILE_SPEED_FACTOR, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, GUNNER_PROJECTILE_RADIUS, YELLOW, GUNNER_PROJECTILE_DAMAGE);
+        return new Projectile(direction.x * GUNNER_PROJECTILE_SPEED_FACTOR, direction.y * GUNNER_PROJECTILE_SPEED_FACTOR, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, GUNNER_PROJECTILE_RADIUS, YELLOW, damage);
     }
     return nullptr;
 }
@@ -89,7 +97,7 @@ void Gunner::draw(){
     }
 }
 
-Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH){}
+Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
 
 void Flyer::draw(){
     if(alive){
@@ -97,11 +105,15 @@ void Flyer::draw(){
     }
 }
 
+void Flyer::move(){
+    hitbox.x -= FLYER_SPEED;
+}
+
 Projectile* Flyer::useWeapon(double x, double y){
     return nullptr;
 }
 
-User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, USER_HEALTH){
+User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, USER_HEALTH, USER_PROJECTILE_DAMAGE){
     jumpvelocity = 0;
     jumps = 2;
     onGround = true;
@@ -110,7 +122,7 @@ User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, U
 }
 
 void User::move(double x, double y){ 
-    hitbox.x =hitbox.x + x;
+    hitbox.x = hitbox.x + x;
     hitbox.y = hitbox.y + y;
 }
 
@@ -119,7 +131,7 @@ Projectile* User::useWeapon(double mouseX, double mouseY){
         shootTimer = GetTime();
         Vector2 direction = {float(mouseX - hitbox.x),float(mouseY - hitbox.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, hitbox.x, hitbox.y, USER_PROJECTILE_RADIUS, YELLOW, USER_PROJECTILE_DAMAGE);
+        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, hitbox.x, hitbox.y, USER_PROJECTILE_RADIUS, YELLOW, damage);
     }
     return nullptr;
 }

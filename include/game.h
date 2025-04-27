@@ -46,12 +46,15 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
-        
+        double obstacleInterval;
+        double obstacleTimer;
+        double gunnerInterval;
+        double gunnerTimer;
+        double bomberInterval;
+        double bomberTimer;
     public:
-        static double obstacleInterval;
-        static double obstacleTimer;
-
-        void spawnEnemy();
+        Game();
+        void spawnEntities();
         void despawnEnemies();
         void updateEnemies();
         void spawnObstacles();
@@ -63,7 +66,6 @@ class Game{
         void checkGameOver();
         void drawBackground();
         void drawScreen();
-        //invloves jumping, moving, shooting etc
         void takeInput();
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
