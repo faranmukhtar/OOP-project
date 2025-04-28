@@ -132,7 +132,22 @@ void Game::updateProjectiles(){
     }
 }
 
+void Game::updateScore(){
+    scoreTimer += GetFrameTime();
+    if(scoreTimer >=1.0){ 
+        score += baseScoreRate;
+        scoreTimer = 0;
+    }
+}
+
+void Game::addKillScore(const string& enemyType){
+    if(enemyType == "bomber") {score += bomberKillBonus;}
+    else if(enemyType == "gunner"){score += gunnerKillBonus;}
+    else if (enemyType == "flyer"){score += flyerKillBonus;}
+}
+
 void Game::updateGame(){
+    updateScore();
     updateObstacles();
     updateProjectiles();
     updateEnemies();
@@ -179,6 +194,8 @@ void Game::drawScreen(){
     for(int i = 0; i < enemies.size(); i++){
         enemies[i]->draw();
     }
+    DrawText(TextFormat("SCORE: %d", (int)score), SCREEN_WIDTH - 200, 20, 30, WHITE);
+
 }
 
 void Game::takeInput(){
@@ -206,6 +223,9 @@ void Game::checkUserProjectilesCollision(){
             if(CheckCollisionCircleRec(userProjectiles[j]->getCenter(), userProjectiles[j]->getRadius(), enemyHitbox)){
                 enemies[i]->takeDamage(userProjectiles[j]->getDamage());
                 userProjectiles[j]->setPosition(-30, -30);
+                if(!enemies[i]->isAlive()) {
+                    addKillScore(enemies[i]->getType());
+                }
             }
         }
     }

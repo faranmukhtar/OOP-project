@@ -55,6 +55,11 @@ class Game{
         double gunnerTimer = 0;
         const double bomberInterval = 10;
         double bomberTimer = 0;
+        const int baseScoreRate = 10;
+        const int bomberKillBonus = 50;
+        const int gunnerKillBonus = 100;
+        const int flyerKillBonus = 30;
+        double scoreTimer = 0;
 
     public:
         void spawnEntities();
@@ -76,4 +81,6 @@ class Game{
         void checkObstacleUserCollision();
         void displayGameOver();
         void displayScores();
+        void updateScore();
+        void addKillScore(const string& enemyType);
 };
