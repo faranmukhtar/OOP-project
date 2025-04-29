@@ -291,11 +291,7 @@ void Game::checkObstacleUserCollision(){
 }
 
 void Game::displayGameOver(){
-    DrawText("Game Over", 380, 200, 40, YELLOW);
-    string scored = "Score: "+std::to_string(score);
-    string Hscore = "High Score: "+std::to_string(Highscore);
-    DrawText( scored.c_str(), 380, 250, 20, BLUE);
-    DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
+    drawGameOver();
     fstream Scores("Scores.dat",ios::binary|ios::out);
     if(!Scores){
         cout<<"Error opening Score file"<<endl;
@@ -308,6 +304,14 @@ void Game::displayGameOver(){
     }
 
     Scores.close();
+}
+
+void Game::drawGameOver(){
+    DrawText("Game Over", 380, 200, 40, YELLOW);
+    string scored = "Score: "+std::to_string(score);
+    string Hscore = "High Score: "+std::to_string(Highscore);
+    DrawText( scored.c_str(), 380, 250, 20, BLUE);
+    DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
 }
 
 
@@ -326,6 +330,6 @@ void Game::displayScores() {
         Scores.close();
     }
 
-    string scoreText = "HIGH SCORE: " + std::to_string(Highscore);
+    string scoreText = "HIGH SCORE: " + to_string(Highscore);
     DrawText(scoreText.c_str(), 380, 200, 40, YELLOW);
 }
