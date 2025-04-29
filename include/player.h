@@ -48,7 +48,6 @@ class Player{
     protected:
         Rectangle hitbox;
         double health;
-        bool alive = true;
         double damage;
     public:
         Player(double x, double y, double width, double height, double health, double damage);

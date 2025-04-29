@@ -64,10 +64,7 @@ Projectile* Bomber::useWeapon(double, double){
 }
 
 void Bomber::draw(){
-    if(alive){
-        DrawRectangleRec(hitbox, GREEN);
-    }
-
+    DrawRectangleRec(hitbox, GREEN);
 }
 
 Gunner::Gunner(double x, double y) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"), moveDirection(1), shootTimer(0){}
@@ -93,17 +90,13 @@ Projectile* Gunner::useWeapon(double userX, double userY){
 }
 
 void Gunner::draw(){
-    if(alive){
-        DrawRectangleRec(hitbox, BLUE);
-    }
+    DrawRectangleRec(hitbox, BLUE);
 }
 
 Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
 
 void Flyer::draw(){
-    if(alive){
-        DrawRectangleRec(hitbox, WHITE);
-    }
+    DrawRectangleRec(hitbox, WHITE);
 }
 
 void Flyer::move(){

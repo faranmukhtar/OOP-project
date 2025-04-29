@@ -134,7 +134,7 @@ void Game::updateProjectiles(){
 
 void Game::updateScore(){
     scoreTimer += GetFrameTime();
-    if(scoreTimer >=1.0){ 
+    if(scoreTimer >= 1.0){ 
         score += baseScoreRate;
         scoreTimer = 0;
     }
@@ -151,10 +151,12 @@ void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
     updateEnemies();
+
     spawnEntities();
     checkObstacleUserCollision();
     checkUserProjectilesCollision();
     checkEnemyProjectilesCollision();
+
     despawnObstacles();
     despawnEnemies();
     despawnProjectiles();
@@ -172,7 +174,7 @@ void Game::loopGameOver(){
 }
 
 bool Game::checkGameOver(){
-    return (!user.isAlive()) || user.getHitbox().x + user.getHitbox().width < 0;
+    return !user.isAlive();
 }
 
 void Game::drawBackground(){
@@ -292,8 +294,8 @@ void Game::checkObstacleUserCollision(){
 
 void Game::displayGameOver(){
     DrawText("Game Over", 380, 200, 40, YELLOW);
-    string scored = "Score: "+std::to_string(score);
-    string Hscore = "High Score: "+std::to_string(Highscore);
+    string scored = "Score: " + to_string(score);
+    string Hscore = "High Score: " + to_string(Highscore);
     DrawText( scored.c_str(), 380, 250, 20, BLUE);
     DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
     fstream Scores("Scores.dat",ios::binary|ios::out);
