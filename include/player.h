@@ -111,6 +111,11 @@ class User : public Player{
         bool onObstacle;
         double shootTimer;
         int score;
+        float blockEnergy = 100.0f;
+        const float maxBlockEnergy = 100.0f;
+        const float blockDepletionRate = 50.0f;
+        const float blockRegenRate = 33.3f;
+        bool isBlocking = false;
     public:
         User();
         void draw() override;
@@ -119,4 +124,9 @@ class User : public Player{
         void updatejump();
         void setOnObstacle(bool);
         Projectile* useWeapon(double, double);
+        void updateBlockEnergy();
+        void startBlocking();
+        void stopBlocking();
+        float getBlockEnergy() const;
+        bool isCurrentlyBlocking() const;
 };

@@ -173,6 +173,33 @@ void User::updatejump() {
     }
 }
 
+void User::startBlocking(){
+    isBlocking = true;
+}
+
+void User::stopBlocking(){
+    isBlocking = false;
+}
+
+void User::updateBlockEnergy(){
+    if(isBlocking){
+        blockEnergy -= blockDepletionRate * GetFrameTime();
+        if(blockEnergy < 0){blockEnergy = 0;}
+    } 
+    else{
+        blockEnergy += blockRegenRate * GetFrameTime();
+        if(blockEnergy > maxBlockEnergy){blockEnergy = maxBlockEnergy;}
+    }
+}
+
+float User::getBlockEnergy()const{
+    return blockEnergy;
+}
+
+bool User::isCurrentlyBlocking()const{
+    return isBlocking && blockEnergy > 0;
+}
+
 
 
 //Enemy made by Faran decided to comment it for later

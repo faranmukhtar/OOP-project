@@ -132,7 +132,22 @@ void Game::updateProjectiles(){
     }
 }
 
+void Game::updateScore(){
+    scoreTimer += GetFrameTime();
+    if(scoreTimer >=1.0){ 
+        score += baseScoreRate;
+        scoreTimer = 0;
+    }
+}
+
+void Game::addKillScore(const string& enemyType){
+    if(enemyType == "bomber") {score += bomberKillBonus;}
+    else if(enemyType == "gunner"){score += gunnerKillBonus;}
+    else if (enemyType == "flyer"){score += flyerKillBonus;}
+}
+
 void Game::updateGame(){
+    updateScore();
     updateObstacles();
     updateProjectiles();
     updateEnemies();
@@ -179,6 +194,12 @@ void Game::drawScreen(){
     for(int i = 0; i < enemies.size(); i++){
         enemies[i]->draw();
     }
+    DrawText(TextFormat("SCORE: %d", (int)score), SCREEN_WIDTH - 200, 20, 30, WHITE);
+    float energyPercent = user.getBlockEnergy()/100.0f;
+    DrawRectangle(20, 50, 200, 20, GRAY);
+    DrawRectangle(20, 50, (int)(200 * energyPercent), 20, BLUE);
+    DrawText("BLOCK ENERGY", 20, 30, 20, WHITE);
+
 }
 
 void Game::takeInput(){
@@ -197,6 +218,15 @@ void Game::takeInput(){
         if(temp != nullptr) userProjectiles.push_back(temp);
     }
     user.updatejump();
+
+    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && user.getBlockEnergy() > 0){
+        user.startBlocking();
+    } 
+    else{
+        user.stopBlocking();
+    }
+    
+    user.updateBlockEnergy();
 }
 
 void Game::checkUserProjectilesCollision(){
@@ -206,6 +236,9 @@ void Game::checkUserProjectilesCollision(){
             if(CheckCollisionCircleRec(userProjectiles[j]->getCenter(), userProjectiles[j]->getRadius(), enemyHitbox)){
                 enemies[i]->takeDamage(userProjectiles[j]->getDamage());
                 userProjectiles[j]->setPosition(-30, -30);
+                if(!enemies[i]->isAlive()) {
+                    addKillScore(enemies[i]->getType());
+                }
             }
         }
     }
@@ -215,8 +248,13 @@ void Game::checkEnemyProjectilesCollision(){
     Rectangle userHitbox = user.getHitbox();
     for(int i = 0; i < enemyProjectiles.size(); i++){
         if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
-            user.takeDamage(enemyProjectiles[i]->getDamage());
-            enemyProjectiles[i]->setPosition(-30, -30);
+            if(user.isCurrentlyBlocking()){
+                enemyProjectiles[i]->setPosition(-30, -30);
+            }
+            else{
+                user.takeDamage(enemyProjectiles[i]->getDamage());
+                enemyProjectiles[i]->setPosition(-30, -30);
+            }
         }
     }
 }
