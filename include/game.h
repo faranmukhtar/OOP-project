@@ -81,6 +81,7 @@ class Game{
         void checkEnemyProjectilesCollision();
         void checkObstacleUserCollision();
         void displayGameOver();
+        void drawGameOver();
         void displayScores();
         void updateScore();
         void addKillScore(const string& enemyType);
