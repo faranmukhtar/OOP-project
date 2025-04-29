@@ -47,20 +47,21 @@ class Game{
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
-        int score = 0;
-        int Highscore = -99;
-        const double obstacleInterval = 5;
-        double obstacleTimer = 0;
-        const double gunnerInterval = 15;
-        double gunnerTimer = 0;
-        const double bomberInterval = 10;
-        double bomberTimer = 0;
+
         const int baseScoreRate = 10;
         const int bomberKillBonus = 50;
         const int gunnerKillBonus = 100;
         const int flyerKillBonus = 30;
-        double scoreTimer = 0;
+        const double obstacleInterval = 5;
+        const double gunnerInterval = 15;
+        const double bomberInterval = 10;
 
+        int score = 0;
+        int Highscore = -99;
+        double obstacleTimer = 0;
+        double gunnerTimer = 0;
+        double bomberTimer = 0;
+        double scoreTimer = 0;
     public:
         void spawnEntities();
         void despawnEnemies();

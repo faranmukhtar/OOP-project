@@ -134,7 +134,7 @@ void Game::updateProjectiles(){
 
 void Game::updateScore(){
     scoreTimer += GetFrameTime();
-    if(scoreTimer >=1.0){ 
+    if(scoreTimer >= 1.0){ 
         score += baseScoreRate;
         scoreTimer = 0;
     }
@@ -151,10 +151,12 @@ void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
     updateEnemies();
+
     spawnEntities();
     checkObstacleUserCollision();
     checkUserProjectilesCollision();
     checkEnemyProjectilesCollision();
+
     despawnObstacles();
     despawnEnemies();
     despawnProjectiles();
@@ -172,7 +174,7 @@ void Game::loopGameOver(){
 }
 
 bool Game::checkGameOver(){
-    return (!user.isAlive()) || user.getHitbox().x + user.getHitbox().width < 0;
+    return !user.isAlive();
 }
 
 void Game::drawBackground(){
