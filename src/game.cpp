@@ -42,7 +42,7 @@ void Game::spawnEntities(){
 
     if(gunnerTimer > gunnerInterval){
         gunnerTimer = 0;
-        enemies.push_back(new Gunner(SCREEN_WIDTH + 200, 130));
+        enemies.push_back(new Gunner(SCREEN_WIDTH + 200, 80 + (rand() % 100), SCREEN_WIDTH - 400 + rand() % 300, 50 + rand() % 150));
     }
 
     if(bomberTimer > bomberInterval){
@@ -95,6 +95,10 @@ void Game::updateEnemies(){
                 user->takeDamage(enemies[i]->getDamage());
                 enemies[i]->takeDamage(1000);
             }
+        }
+        if(enemies[i]->getType() == "gunner"){
+            Rectangle hitbox = user->getHitbox();
+            temp = enemies[i]->useWeapon(hitbox.x, hitbox.y);
         }
         if(temp != nullptr) enemyProjectiles.push_back(temp);
     }
@@ -192,6 +196,7 @@ void Game::updateGame(){
     checkObstacleUserCollision();
     checkUserProjectilesCollision();
     checkEnemyProjectilesCollision();
+    checkUserOutOfBounds();
 
     despawnObstacles();
     despawnEnemies();
@@ -354,6 +359,12 @@ void Game::checkObstacleUserCollision(){
     user->setOnObstacle(obstacleY);
 }
 
+void Game::checkUserOutOfBounds(){
+    if(user->getHitbox().x + user->getHitbox().width < 0){
+        user->takeDamage(outOfBoundsDamage);
+    }
+}
+
 void Game::displayGameOver(){
     fstream Scores("Scores.dat",ios::binary|ios::out);
     if(!Scores){
@@ -397,4 +408,24 @@ void Game::displayScores() {
 
     string scoreText = "HIGH SCORE: " + to_string(Highscore);
     DrawText(scoreText.c_str(), 380, 200, 40, YELLOW);
+}
+
+Game::~Game(){
+    for(int i = 0; i < enemies.size(); i++){
+        delete enemies[i];
+    }
+
+    for(int i = 0; i < userProjectiles.size(); i++){
+        delete userProjectiles[i];
+    }
+
+    for(int i = 0; i < obstacles.size(); i++){
+        delete obstacles[i];
+    }
+
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        delete enemyProjectiles[i];
+    }
+
+    delete user;
 }

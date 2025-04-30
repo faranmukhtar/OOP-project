@@ -20,7 +20,8 @@ const double BOMBER_PROJECTILE_DAMAGE = 30;
 const double GUNNER_WIDTH = 40;
 const double GUNNER_HEIGHT = 60;
 const double GUNNER_HEALTH = 60;
-const double GUNNER_MOVE_INTERVAL = 1.5;
+const double GUNNER_SPEED = 5;
+const double GUNNER_MOVE_INTERVAL = 4;
 const double GUNNER_SHOOT_INTERVAL = 2.0;
 const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
 const double GUNNER_PROJECTILE_RADIUS = 5;
@@ -63,8 +64,8 @@ class Player{
 
 class Enemy : public Player{
     protected:
-        float timer;
         string type;
+        Vector2 speed;
     public:
         Enemy(double x, double y, double width, double height, double health, double damage, string type);
         virtual void move() = 0;
@@ -84,11 +85,13 @@ class Bomber : public Enemy{
 
 class Gunner : public Enemy{ 
     private:
-        double moveDirection;
+        Vector2 speed;
+        Vector2 startPos;
+        double moveTimer;
         float shootTimer;
-    
+        bool startPosReached;
     public:
-        Gunner(double x, double y);
+        Gunner(double x, double y, double startX, double startY);
         Projectile* useWeapon(double x, double y)override;
         void draw() override;
         void move()override;

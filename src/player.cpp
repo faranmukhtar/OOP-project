@@ -35,7 +35,9 @@ Rectangle Player::getHitbox(){
     return hitbox;
 }
 
-Enemy::Enemy(double x, double y, double width, double height, double health, double damage, string type) : Player(x, y, width, height, health, damage), timer(0), type(type){}
+Enemy::Enemy(double x, double y, double width, double height, double health, double damage, string type) : Player(x, y, width, height, health, damage){
+    this->type = type;
+}
 
 string Enemy::getType(){
     return type;
@@ -67,15 +69,50 @@ void Bomber::draw(){
     DrawRectangleRec(hitbox, GREEN);
 }
 
-Gunner::Gunner(double x, double y) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"), moveDirection(1), shootTimer(0){}
+Gunner::Gunner(double x, double y, double startX, double startY) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"){
+    shootTimer = 0;
+    moveTimer = 0;
+    startPosReached = false;
+    startPos.x = startX;
+    startPos.y = startY;
+}
 
 void Gunner::move(){ 
-    timer += GetFrameTime();   
-    if (timer >= GUNNER_MOVE_INTERVAL){
-        moveDirection*= -1;
-        timer = 0;
+    if(!startPosReached){
+        Vector2 direction = {float(startPos.x - hitbox.x),float(startPos.y - hitbox.y)};
+        direction = Vector2Normalize(direction);
+        speed = {direction.x * (float)GUNNER_SPEED, direction.y * (float)GUNNER_SPEED};
+        hitbox.x += speed.x;
+        hitbox.y += speed.y;
+        cout << hitbox.x << ", " << hitbox.y << endl;
+        if(hitbox.x <= startPos.x && (hitbox.y <= startPos.y + 10 && hitbox.y >= startPos.y - 10)){
+            startPosReached = true;
+            direction.x = rand() % 2 == 0 ? 1 : -1;
+            direction.y = rand() % 2 == 0 ? 1 : -1;
+            direction = Vector2Normalize(direction);
+            speed = {direction.x * (float)GUNNER_SPEED, direction.y * (float)GUNNER_SPEED};
+        }
     }
-    hitbox.x += moveDirection * 1.5f;
+    else{
+        moveTimer += GetFrameTime();  
+        if (moveTimer >= GUNNER_MOVE_INTERVAL){
+            if(hitbox.x <= SCREEN_WIDTH - 400 || 
+                hitbox.x + hitbox.width >= SCREEN_WIDTH - 50 ||
+                hitbox.y + hitbox.height >= 300 ||
+                hitbox.y <= 50){
+
+                moveTimer = 0;
+                if(hitbox.x <= SCREEN_WIDTH - 400 || hitbox.x + hitbox.width >= SCREEN_WIDTH - 50){
+                    speed.x *= -1;
+                }
+                if(hitbox.y + hitbox.height >= 300 || hitbox.y <= 50){
+                    speed.y *= -1;
+                }
+            }
+            hitbox.x += speed.x;
+            hitbox.y += speed.y;
+        }
+    }
 }
 
 Projectile* Gunner::useWeapon(double userX, double userY){  
@@ -123,9 +160,10 @@ void User::move(double x, double y){
 Projectile* User::useWeapon(double mouseX, double mouseY){
     if(GetTime() - shootTimer > USER_SHOOT_INTERVAL){
         shootTimer = GetTime();
-        Vector2 direction = {float(mouseX - hitbox.x),float(mouseY - hitbox.y)};
+        Vector2 shootLocation = {hitbox.x + hitbox.width, hitbox.y + hitbox.height / 4.0};
+        Vector2 direction = {float(mouseX - shootLocation.x),float(mouseY - shootLocation.y)};
         direction = Vector2Normalize(direction);
-        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, hitbox.x, hitbox.y, USER_PROJECTILE_RADIUS, YELLOW, damage);
+        return new Projectile(direction.x * USER_PROJECTILE_SPEED_FACTOR, direction.y * USER_PROJECTILE_SPEED_FACTOR, shootLocation.x, shootLocation.y, USER_PROJECTILE_RADIUS, YELLOW, damage);
     }
     return nullptr;
 }

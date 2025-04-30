@@ -53,8 +53,9 @@ class Game{
         const int gunnerKillBonus = 100;
         const int flyerKillBonus = 30;
         const double obstacleInterval = 5;
-        const double gunnerInterval = 15;
+        const double gunnerInterval = 6;
         const double bomberInterval = 10;
+        const double outOfBoundsDamage = 0.5;
 
         int score = 0;
         int Highscore = -99;
@@ -83,9 +84,11 @@ class Game{
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
         void checkObstacleUserCollision();
+        void checkUserOutOfBounds();
         void displayGameOver();
         void drawGameOver();
         void displayScores();
         void updateScore();
         void addKillScore(const string& enemyType);
+        ~Game();
 };
