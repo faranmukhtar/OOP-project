@@ -91,6 +91,7 @@ void Game::updateEnemies(){
         }
         if(enemies[i]->getType() == "flyer"){
             if(CheckCollisionRecs(enemies[i]->getHitbox(), user->getHitbox())){
+                if(!user->isCurrentlyBlocking())
                 user->takeDamage(enemies[i]->getDamage());
                 enemies[i]->takeDamage(1000);
             }
@@ -280,17 +281,17 @@ void Game::takeInput(){
         user->jump();
     }
 
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !user->isCurrentlyBlocking()){
         Projectile* temp = user->useWeapon(GetMouseX(), GetMouseY());
         if(temp != nullptr) userProjectiles.push_back(temp);
     }
     user->updatejump();
 
     if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && user->getBlockEnergy() > 0){
-        user->startBlocking();
+        user->setBlocking(true);
     } 
     else{
-        user->stopBlocking();
+        user->setBlocking(false);
     }
     
     user->updateBlockEnergy();
@@ -314,14 +315,10 @@ void Game::checkUserProjectilesCollision(){
 void Game::checkEnemyProjectilesCollision(){
     Rectangle userHitbox = user->getHitbox();
     for(int i = 0; i < enemyProjectiles.size(); i++){
-        if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
-            if(user->isCurrentlyBlocking()){
-                enemyProjectiles[i]->setPosition(-30, -30);
-            }
-            else{
-                user->takeDamage(enemyProjectiles[i]->getDamage());
-                enemyProjectiles[i]->setPosition(-30, -30);
-            }
+        if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){ 
+            if(!user->isCurrentlyBlocking())
+            user->takeDamage(enemyProjectiles[i]->getDamage());
+            enemyProjectiles[i]->setPosition(-30, -30);
         }
     }
 }

@@ -166,12 +166,8 @@ void User::updatejump() {
     }
 }
 
-void User::startBlocking(){
-    isBlocking = true;
-}
-
-void User::stopBlocking(){
-    isBlocking = false;
+void User::setBlocking(bool val){
+    isBlocking = val;
 }
 
 void User::updateBlockEnergy(){

@@ -124,8 +124,7 @@ class User : public Player{
         void setOnObstacle(bool);
         Projectile* useWeapon(double, double);
         void updateBlockEnergy();
-        void startBlocking();
-        void stopBlocking();
+        void setBlocking(bool);
         float getBlockEnergy() const;
         bool isCurrentlyBlocking() const;
 };
