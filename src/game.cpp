@@ -1,5 +1,40 @@
 #include "game.h"
 
+Game::Game(){
+    user = new User();
+}
+
+void Game::init(){
+    score = 0;
+    double obstacleTimer = 0;
+    double gunnerTimer = 0;
+    double bomberTimer = 0;
+    double scoreTimer = 0;
+
+    for(int i = 0; i < enemies.size(); i++){
+        delete enemies[i];
+    }
+    enemies.clear();
+
+    for(int i = 0; i < userProjectiles.size(); i++){
+        delete userProjectiles[i];
+    }
+    userProjectiles.clear();
+
+    for(int i = 0; i < obstacles.size(); i++){
+        delete obstacles[i];
+    }
+    obstacles.clear();
+
+    for(int i = 0; i < enemyProjectiles.size(); i++){
+        delete enemyProjectiles[i];
+    }
+    enemyProjectiles.clear();
+
+    delete user;
+    user = new User();
+}
+
 void Game::spawnEntities(){
     obstacleTimer += GetFrameTime();
     gunnerTimer += GetFrameTime();
@@ -55,8 +90,8 @@ void Game::updateEnemies(){
             temp = enemies[i]->useWeapon(0, 0);
         }
         if(enemies[i]->getType() == "flyer"){
-            if(CheckCollisionRecs(enemies[i]->getHitbox(), user.getHitbox())){
-                user.takeDamage(enemies[i]->getDamage());
+            if(CheckCollisionRecs(enemies[i]->getHitbox(), user->getHitbox())){
+                user->takeDamage(enemies[i]->getDamage());
                 enemies[i]->takeDamage(1000);
             }
         }
@@ -164,17 +199,22 @@ void Game::updateGame(){
 
 void Game::loopGameOver(){
     bool keyPressed = false;
-    BeginDrawing();
-    ClearBackground(BLACK);
     displayGameOver();
-    EndDrawing();
-    while(!keyPressed || !WindowShouldClose()){
-        keyPressed = IsKeyPressed(KEY_SPACE);
+    while(!keyPressed && !WindowShouldClose()){
+        BeginDrawing();
+
+        ClearBackground(BLACK);
+
+        keyPressed = IsKeyPressed(KEY_ENTER);
+        drawGameOver();
+
+        EndDrawing();
     }
+    init();
 }
 
 bool Game::checkGameOver(){
-    return !user.isAlive();
+    return !user->isAlive();
 }
 
 void Game::drawBackground(){
@@ -183,7 +223,7 @@ void Game::drawBackground(){
 
 void Game::drawScreen(){
     drawBackground();
-    user.draw();
+    user->draw();
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->draw();
     }
@@ -197,38 +237,41 @@ void Game::drawScreen(){
         enemies[i]->draw();
     }
     DrawText(TextFormat("SCORE: %d", (int)score), SCREEN_WIDTH - 200, 20, 30, WHITE);
-    float energyPercent = user.getBlockEnergy()/100.0f;
-    DrawRectangle(20, 50, 200, 20, GRAY);
-    DrawRectangle(20, 50, (int)(200 * energyPercent), 20, BLUE);
-    DrawText("BLOCK ENERGY", 20, 30, 20, WHITE);
 
+    float energyPercent = user->getBlockEnergy()/100.0f;
+    DrawRectangle(20, 50, 200, 15, GRAY);
+    DrawRectangle(20, 50, 200 * energyPercent, 15, BLUE);
+
+    float healthPercent = user->getHealth()/100.0f;
+    DrawRectangle(20, 35, 200, 15, GRAY);
+    DrawRectangle(20, 35, 200 * healthPercent, 15, GREEN);
 }
 
 void Game::takeInput(){
-    if (IsKeyDown(KEY_D) && user.getHitbox().x < SCREEN_WIDTH - user.getHitbox().width){ 
-        user.move(PLAYER_SPEED, 0);
+    if (IsKeyDown(KEY_D) && user->getHitbox().x < SCREEN_WIDTH - user->getHitbox().width){ 
+        user->move(PLAYER_SPEED, 0);
     }
-    if (IsKeyDown(KEY_A)&&user.getHitbox().x > 0){
-        user.move(-PLAYER_SPEED, 0);
+    if (IsKeyDown(KEY_A)&&user->getHitbox().x > 0){
+        user->move(-PLAYER_SPEED, 0);
     }
     if(IsKeyPressed(KEY_SPACE)){
-        user.jump();
+        user->jump();
     }
 
     if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
-        Projectile* temp = user.useWeapon(GetMouseX(), GetMouseY());
+        Projectile* temp = user->useWeapon(GetMouseX(), GetMouseY());
         if(temp != nullptr) userProjectiles.push_back(temp);
     }
-    user.updatejump();
+    user->updatejump();
 
-    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && user.getBlockEnergy() > 0){
-        user.startBlocking();
+    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && user->getBlockEnergy() > 0){
+        user->startBlocking();
     } 
     else{
-        user.stopBlocking();
+        user->stopBlocking();
     }
     
-    user.updateBlockEnergy();
+    user->updateBlockEnergy();
 }
 
 void Game::checkUserProjectilesCollision(){
@@ -247,14 +290,14 @@ void Game::checkUserProjectilesCollision(){
 }
 
 void Game::checkEnemyProjectilesCollision(){
-    Rectangle userHitbox = user.getHitbox();
+    Rectangle userHitbox = user->getHitbox();
     for(int i = 0; i < enemyProjectiles.size(); i++){
         if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
-            if(user.isCurrentlyBlocking()){
+            if(user->isCurrentlyBlocking()){
                 enemyProjectiles[i]->setPosition(-30, -30);
             }
             else{
-                user.takeDamage(enemyProjectiles[i]->getDamage());
+                user->takeDamage(enemyProjectiles[i]->getDamage());
                 enemyProjectiles[i]->setPosition(-30, -30);
             }
         }
@@ -262,7 +305,7 @@ void Game::checkEnemyProjectilesCollision(){
 }
 
 void Game::checkObstacleUserCollision(){
-    Rectangle userHitbox = user.getHitbox();
+    Rectangle userHitbox = user->getHitbox();
     bool obstacleY = false;
     for(int i = 0; i < obstacles.size(); i++){
         Rectangle obHitbox = obstacles[i]->getHitbox();
@@ -273,8 +316,8 @@ void Game::checkObstacleUserCollision(){
             userHitbox.y < obHitbox.y + obHitbox.height) &&
             (userHitbox.y + userHitbox.height) - obHitbox.y > 10){
 
-            user.setPosition(obHitbox.x - userHitbox.width, userHitbox.y);
-            userHitbox = user.getHitbox();
+            user->setPosition(obHitbox.x - userHitbox.width, userHitbox.y);
+            userHitbox = user->getHitbox();
 
         }
 
@@ -283,17 +326,16 @@ void Game::checkObstacleUserCollision(){
            (userHitbox.x + userHitbox.width > obHitbox.x &&
             userHitbox.x < obHitbox.x + obHitbox.width)){
 
-            user.setPosition(userHitbox.x, obHitbox.y - userHitbox.height);
+            user->setPosition(userHitbox.x, obHitbox.y - userHitbox.height);
             obstacleY = true;
 
         }
     }
     
-    user.setOnObstacle(obstacleY);
+    user->setOnObstacle(obstacleY);
 }
 
 void Game::displayGameOver(){
-    drawGameOver();
     fstream Scores("Scores.dat",ios::binary|ios::out);
     if(!Scores){
         cout<<"Error opening Score file"<<endl;

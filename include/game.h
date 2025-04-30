@@ -42,7 +42,7 @@ const double OBSTACLE_SPEED = 10;
 //Game logic goes here
 class Game{
     private:
-        User user;
+        User* user;
         vector<Enemy*> enemies;
         vector<Obstacle*> obstacles;
         vector<Projectile*> enemyProjectiles;
@@ -63,6 +63,8 @@ class Game{
         double bomberTimer = 0;
         double scoreTimer = 0;
     public:
+        Game();
+        void init();
         void spawnEntities();
         void despawnEnemies();
         void updateEnemies();
