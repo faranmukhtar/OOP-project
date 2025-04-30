@@ -14,8 +14,12 @@ int main ()
 	SetTargetFPS(60);
 
 	SearchAndSetResourceDir("resources");
+
+	bool closeWindow = false;
+
+	closeWindow = game.drawLogo();
 	
-	while (!WindowShouldClose())
+	while (!WindowShouldClose() && !closeWindow)
 	{
 		BeginDrawing();
 		
@@ -24,11 +28,13 @@ int main ()
 		game.takeInput();
 
 		game.updateGame();
-		if(game.checkGameOver()){
-			game.loopGameOver();
-		}
 
 		game.drawScreen();
+
+		if(game.checkGameOver()){
+			closeWindow = game.loopGameOver();
+		}
+
 		EndDrawing();
 	}
 

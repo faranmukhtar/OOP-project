@@ -74,10 +74,11 @@ class Game{
         void despawnProjectiles();
         void updateProjectiles();
         void updateGame();
-        void loopGameOver();
+        bool loopGameOver();
         bool checkGameOver();
         void drawBackground();
         void drawScreen();
+        bool drawLogo();
         void takeInput();
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();

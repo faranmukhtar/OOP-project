@@ -6,10 +6,10 @@ Game::Game(){
 
 void Game::init(){
     score = 0;
-    double obstacleTimer = 0;
-    double gunnerTimer = 0;
-    double bomberTimer = 0;
-    double scoreTimer = 0;
+    obstacleTimer = 0;
+    gunnerTimer = 0;
+    bomberTimer = 0;
+    scoreTimer = 0;
 
     for(int i = 0; i < enemies.size(); i++){
         delete enemies[i];
@@ -197,7 +197,7 @@ void Game::updateGame(){
     despawnProjectiles();
 }
 
-void Game::loopGameOver(){
+bool Game::loopGameOver(){
     bool keyPressed = false;
     displayGameOver();
     while(!keyPressed && !WindowShouldClose()){
@@ -210,7 +210,11 @@ void Game::loopGameOver(){
 
         EndDrawing();
     }
+    if(WindowShouldClose()){
+        return true;
+    }
     init();
+    return false;
 }
 
 bool Game::checkGameOver(){
@@ -245,6 +249,24 @@ void Game::drawScreen(){
     float healthPercent = user->getHealth()/100.0f;
     DrawRectangle(20, 35, 200, 15, GRAY);
     DrawRectangle(20, 35, 200 * healthPercent, 15, GREEN);
+}
+
+bool Game::drawLogo(){
+    bool keyPressed = false;
+    while(!WindowShouldClose() && !keyPressed){
+        BeginDrawing();
+
+        DrawText("Shadow Sprint", 330, 200, 50, YELLOW);
+        DrawText("Press Enter to play", 380, 250, 20, WHITE);
+
+        keyPressed = IsKeyPressed(KEY_ENTER);
+
+        EndDrawing();
+    }
+    if(WindowShouldClose()){
+        return true;
+    }
+    return false;
 }
 
 void Game::takeInput(){
@@ -356,6 +378,8 @@ void Game::drawGameOver(){
     string Hscore = "High Score: "+std::to_string(Highscore);
     DrawText( scored.c_str(), 380, 250, 20, BLUE);
     DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
+
+    DrawText("Press Enter to play again", 380, 500, 20, WHITE);
 }
 
 

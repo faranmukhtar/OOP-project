@@ -192,14 +192,3 @@ float User::getBlockEnergy()const{
 bool User::isCurrentlyBlocking()const{
     return isBlocking && blockEnergy > 0;
 }
-
-
-
-//Enemy made by Faran decided to comment it for later
-
-// Projectile Enemy::useWeapon(double x, double y){
-//     Projectile newBullet(10, 0, hitbox.x + hitbox.width, hitbox.y + hitbox.height / 2, 5, YELLOW);
-//         bullets.push_back(newBullet);
-//         updateBullets();
-//         return newBullet;
-// }
