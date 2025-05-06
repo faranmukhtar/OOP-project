@@ -84,7 +84,6 @@ void Gunner::move(){
         speed = {direction.x * (float)GUNNER_SPEED, direction.y * (float)GUNNER_SPEED};
         hitbox.x += speed.x;
         hitbox.y += speed.y;
-        cout << hitbox.x << ", " << hitbox.y << endl;
         if(hitbox.x <= startPos.x && (hitbox.y <= startPos.y + 10 && hitbox.y >= startPos.y - 10)){
             startPosReached = true;
             direction.x = rand() % 2 == 0 ? 1 : -1;

@@ -17,6 +17,8 @@ int main ()
 
 	bool closeWindow = false;
 
+	game.loadAssets();
+
 	closeWindow = game.drawLogo();
 	
 	while (!WindowShouldClose() && !closeWindow)
@@ -37,6 +39,8 @@ int main ()
 
 		EndDrawing();
 	}
+
+	game.unloadAssets();
 
 	CloseWindow();
 	return 0;

@@ -35,6 +35,33 @@ void Game::init(){
     user = new User();
 }
 
+void Game::loadAssets(){
+    startScreenTexture = LoadTexture("Misc_textures/start_screen.png");
+
+    backgroundTextures[0] = LoadTexture("Background/1.png");
+    backgroundTextures[1] = LoadTexture("Background/2.png");
+    backgroundTextures[2] = LoadTexture("Background/3.png");
+    backgroundTextures[3] = LoadTexture("Background/4.png");
+    backgroundTextures[4] = LoadTexture("Background/5.png");
+    for(int i = 0; i < 5; i++){
+        backgroundScrollX[i] = 0;
+    }
+
+    groundTextures[0] = LoadTexture("Ground/1.png");
+    groundTextures[1] = LoadTexture("Ground/2.png");
+    groundScrollX = 0;
+}
+
+void Game::unloadAssets(){
+    UnloadTexture(startScreenTexture);
+    for(int i = 0; i < 5; i++){
+        UnloadTexture(backgroundTextures[i]);
+    }
+    for(int i = 0; i < 2; i++){
+        UnloadTexture(groundTextures[i]);
+    }
+}
+
 void Game::spawnEntities(){
     obstacleTimer += GetFrameTime();
     gunnerTimer += GetFrameTime();
@@ -227,12 +254,69 @@ bool Game::checkGameOver(){
     return !user->isAlive();
 }
 
+void Game::drawGround() {
+    Texture2D topTexture = groundTextures[0];    // First row texture
+    Texture2D fillTexture = groundTextures[1];   // Subsequent rows texture
+    
+    // Increased tile dimensions (adjust these values as needed)
+    const float tileScale = 1.5;  // 2x scale factor
+    const int tileWidth = topTexture.width * tileScale;
+    const int tileHeight = topTexture.height * tileScale;
+    const int groundHeight = 3;                  // Number of vertical tiles
+    
+    // Calculate how many horizontal tiles we need
+    int numHorizontalTiles = (int)ceil(GetScreenWidth() / (float)tileWidth) + 1;
+    
+    // Update scroll position (now using scaled width)
+    groundScrollX -= groundScrollSpeed * GetFrameTime();
+    groundScrollX = fmod(groundScrollX, tileWidth);
+    
+    // Draw each layer from bottom to top
+    for (int yLayer = 0; yLayer < groundHeight; yLayer++) {
+        // Choose texture based on layer
+        Texture2D currentTexture = (yLayer == 0) ? topTexture : fillTexture;
+        
+        // Calculate Y position - start from GROUND_Y and move up
+        float yPos = GROUND_Y + yLayer * tileHeight;
+        
+        // Draw all tiles in this layer with scaling
+        for (int xTile = 0; xTile < numHorizontalTiles; xTile++) {
+            float xPos = groundScrollX + xTile * tileWidth;
+            
+            if (xPos + tileWidth > 0 && xPos < GetScreenWidth()) {
+                Rectangle destRec = {xPos, yPos, (float)tileWidth, (float)tileHeight};
+                Rectangle sourceRec = {0, 0, (float)currentTexture.width, (float)currentTexture.height};
+                DrawTexturePro(currentTexture, sourceRec, destRec, {0,0}, 0.0f, WHITE);
+            }
+        }
+    }
+}
+
 void Game::drawBackground(){
-    DrawLine(0, GROUND_Y, GetScreenWidth(), GROUND_Y, WHITE);
+    for (int i = 0; i < 5; i++) {
+        backgroundScrollX[i] -= backgroundScrollSpeed[i] * GetFrameTime();
+        backgroundScrollX[i] = fmod(backgroundScrollX[i], backgroundTextures[i].width);
+
+        float scale = (float)GROUND_Y / backgroundTextures[i].height;
+        int scaledWidth = backgroundTextures[i].width * scale;
+
+        int numTextures = (int)ceil(GetScreenWidth() / (float)scaledWidth) + 1;
+
+        for (int n = 0; n < numTextures; n++) {
+            float xPos = backgroundScrollX[i] * scale + (n * scaledWidth);
+            
+            if (xPos + scaledWidth > 0 && xPos < GetScreenWidth()) {
+                Rectangle sourceRec = {0, 0, (float)backgroundTextures[i].width, (float)backgroundTextures[i].height};
+                Rectangle destRec = {xPos, 0, (float)scaledWidth, (float)SCREEN_HEIGHT};
+                DrawTexturePro(backgroundTextures[i], sourceRec, destRec, {0,0}, 0.0f, WHITE);
+            }
+        }
+    }
 }
 
 void Game::drawScreen(){
     drawBackground();
+    drawGround();
     user->draw();
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->draw();
@@ -246,7 +330,10 @@ void Game::drawScreen(){
     for(int i = 0; i < enemies.size(); i++){
         enemies[i]->draw();
     }
-    DrawText(TextFormat("SCORE: %d", (int)score), SCREEN_WIDTH - 200, 20, 30, WHITE);
+    string scoreText = to_string(score);
+    while(scoreText.size() < 5)
+    scoreText.insert(0, 1, '0');
+    DrawText(scoreText.c_str(), SCREEN_WIDTH - 180, 40, 40, WHITE);
 
     float energyPercent = user->getBlockEnergy()/100.0f;
     DrawRectangle(20, 50, 200, 15, GRAY);
@@ -262,8 +349,7 @@ bool Game::drawLogo(){
     while(!WindowShouldClose() && !keyPressed){
         BeginDrawing();
 
-        DrawText("Shadow Sprint", 330, 200, 50, YELLOW);
-        DrawText("Press Enter to play", 380, 250, 20, WHITE);
+        DrawTexture(startScreenTexture, 0, 0, WHITE);
 
         keyPressed = IsKeyPressed(KEY_ENTER);
 
