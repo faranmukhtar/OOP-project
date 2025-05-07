@@ -35,6 +35,50 @@ void Game::init(){
     user = new User();
 }
 
+
+void Game::loadSounds(){
+    gunnerSpawnSound = LoadSound("sounds/gunner-spawn.mp3");
+    SetSoundVolume(gunnerSpawnSound, 0.6f);
+    bomberSpawnSound = LoadSound("sounds/bomber-spawn.mp3");
+    SetSoundVolume(bomberSpawnSound, 0.5f);
+    bombExplosionSound = LoadSound("sounds/bomb-explosion.wav");
+    SetSoundVolume(bombExplosionSound, 0.7f);
+    flyerSound = LoadSound("sounds/flyer-spawn.wav");
+    SetSoundVolume(flyerSound, 1.0f);
+    userHitSound = LoadSound("sounds/user-damage.wav");
+    SetSoundVolume(userHitSound, 0.6f);
+    userDeathSound = LoadSound("sounds/user-dying.mp3");
+    SetSoundVolume(userDeathSound, 0.5f);
+    enemyDeathSound = LoadSound("sounds/enemy-death.mp3");
+    SetSoundVolume(enemyDeathSound, 0.2f);
+    bgMusic = LoadMusicStream("sounds/background-music.mp3");
+    gunnerShootSound = LoadSound("sounds/gunner-shoot.wav");
+    SetSoundVolume(gunnerShootSound, 0.35f);
+    bomberShootSound = LoadSound("sounds/bomber-shoot.mp3");
+    SetSoundVolume(bomberShootSound, 1.0f);
+    userShootSound = LoadSound("sounds/user-shoot.wav");
+    SetSoundVolume(userShootSound, 0.33f);
+    userJumpSound = LoadSound("sounds/user-jump.wav");
+    SetSoundVolume(userJumpSound, 0.9f);
+    PlayMusicStream(bgMusic);
+    SetMusicVolume(bgMusic, 0.5f);
+}
+
+void Game::unloadSounds(){
+    UnloadSound(gunnerSpawnSound);
+    UnloadSound(bomberSpawnSound);
+    UnloadSound(bombExplosionSound);
+    UnloadSound(flyerSound);
+    UnloadSound(userHitSound);
+    UnloadSound(userDeathSound);
+    UnloadSound(enemyDeathSound);
+    UnloadMusicStream(bgMusic);
+    UnloadSound(gunnerShootSound);
+    UnloadSound(bomberShootSound);
+    UnloadSound(userShootSound);
+    UnloadSound(userJumpSound);
+}
+
 void Game::loadAssets(){
     fontOswald = LoadFont("Fonts/Anonymous_Pro.ttf");
 
@@ -76,23 +120,29 @@ void Game::spawnEntities(){
     if(gunnerTimer > gunnerInterval){
         gunnerTimer = 0;
         enemies.push_back(new Gunner(SCREEN_WIDTH + 200, 80 + (rand() % 100), SCREEN_WIDTH - 400 + rand() % 300, 50 + rand() % 150));
+        PlaySound(gunnerSpawnSound); 
     }
 
     if(bomberTimer > bomberInterval){
         bomberTimer = 0;
         int randInt = rand() % 3;
         enemies.push_back(new Bomber(SCREEN_WIDTH + 80, 80));
+        PlaySound(bomberSpawnSound);
         enemies.push_back(new Bomber(SCREEN_WIDTH + 160, 80));
+        PlaySound(bomberSpawnSound);
         if(randInt >= 1){
             enemies.push_back(new Bomber(SCREEN_WIDTH + 240, 80));
+            PlaySound(bomberSpawnSound);
         }
         if(randInt == 2){
             enemies.push_back(new Bomber(SCREEN_WIDTH + 320, 80));
+            PlaySound(bomberSpawnSound);
         }
     }
 
     if(obstacleTimer > obstacleInterval){
         if(rand() % 4 == 0){
+            PlaySound(flyerSound);
             enemies.push_back(new Flyer(SCREEN_WIDTH + 200, GROUND_Y - (rand() % 100) - 50));
         }else{
             spawnObstacles();
@@ -106,6 +156,7 @@ void Game::despawnEnemies(){
     for(int i = 0; i < enemies.size(); i++){
         Rectangle hitbox = enemies[i]->getHitbox();
         if(!enemies[i]->isAlive() || hitbox.y + hitbox.height < 0 || hitbox.x + hitbox.width < 0){
+            if(!enemies[i]->isAlive()) PlaySound(enemyDeathSound);
             delete enemies[i];
             enemies[i] = nullptr;
         }else{
@@ -120,7 +171,7 @@ void Game::updateEnemies(){
         enemies[i]->move();
         Projectile* temp = nullptr;
         if(enemies[i]->getType() == "bomber"){
-            temp = enemies[i]->useWeapon(0, 0);
+            temp = enemies[i]->useWeapon(0, 0, bomberShootSound);
         }
         if(enemies[i]->getType() == "flyer"){
             if(CheckCollisionRecs(enemies[i]->getHitbox(), user->getHitbox())){
@@ -131,7 +182,7 @@ void Game::updateEnemies(){
         }
         if(enemies[i]->getType() == "gunner"){
             Rectangle hitbox = user->getHitbox();
-            temp = enemies[i]->useWeapon(hitbox.x, hitbox.y);
+            temp = enemies[i]->useWeapon(hitbox.x, hitbox.y, gunnerShootSound);
         }
         if(temp != nullptr) enemyProjectiles.push_back(temp);
     }
@@ -224,7 +275,7 @@ void Game::updateGame(){
     updateObstacles();
     updateProjectiles();
     updateEnemies();
-
+    UpdateMusicStream(bgMusic);
     spawnEntities();
     checkObstacleUserCollision();
     checkUserProjectilesCollision();
@@ -237,7 +288,11 @@ void Game::updateGame(){
 }
 
 bool Game::checkGameOver(){
-    return !user->isAlive();
+    if(!user->isAlive()) {
+        PlaySound(userDeathSound);
+        return true;
+    }
+    return false;
 }
 
 void Game::drawGround() {
@@ -385,14 +440,14 @@ void Game::takeInput(){
         user->move(-PLAYER_SPEED, 0);
     }
     if(IsKeyPressed(KEY_SPACE)){
-        user->jump();
+        user->jump(userJumpSound);
     }
 
     if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !user->isCurrentlyBlocking()){
-        Projectile* temp = user->useWeapon(GetMouseX(), GetMouseY());
+        Projectile* temp = user->useWeapon(GetMouseX(), GetMouseY(), userShootSound);
         if(temp != nullptr) userProjectiles.push_back(temp);
     }
-    user->updatejump();
+    user->updatejump(userJumpSound);
 
     if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && user->getBlockEnergy() > 0){
         user->setBlocking(true);
@@ -422,9 +477,14 @@ void Game::checkUserProjectilesCollision(){
 void Game::checkEnemyProjectilesCollision(){
     Rectangle userHitbox = user->getHitbox();
     for(int i = 0; i < enemyProjectiles.size(); i++){
-        if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){ 
-            if(!user->isCurrentlyBlocking())
-            user->takeDamage(enemyProjectiles[i]->getDamage());
+        if(CheckCollisionCircleRec(enemyProjectiles[i]->getCenter(), enemyProjectiles[i]->getRadius(), userHitbox)){
+            if(enemyProjectiles[i]->getRadius() == BOMBER_PROJECTILE_RADIUS){
+                PlaySound(bombExplosionSound);
+            }
+            if(!user->isCurrentlyBlocking()){
+                user->takeDamage(enemyProjectiles[i]->getDamage());
+                PlaySound(userHitSound);
+            }
             enemyProjectiles[i]->setPosition(-30, -30);
         }
     }

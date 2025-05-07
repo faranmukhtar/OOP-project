@@ -52,7 +52,7 @@ class Player{
         double damage;
     public:
         Player(double x, double y, double width, double height, double health, double damage);
-        virtual Projectile* useWeapon(double, double) = 0;
+        virtual Projectile* useWeapon(double, double, Sound) = 0;
         Rectangle getHitbox();
         void takeDamage(double);
         bool isAlive();
@@ -78,7 +78,7 @@ class Bomber : public Enemy{
         double targetX;
     public:
         Bomber(double x, double y);
-        Projectile* useWeapon(double x, double y) override;
+        Projectile* useWeapon(double x, double y, Sound) override;
         void move()override;
         void draw(Texture2D characterTextures[]) override;
 };
@@ -92,7 +92,7 @@ class Gunner : public Enemy{
         bool startPosReached;
     public:
         Gunner(double x, double y, double startX, double startY);
-        Projectile* useWeapon(double x, double y)override;
+        Projectile* useWeapon(double x, double y, Sound)override;
         void draw(Texture2D characterTextures[]) override;
         void move()override;
 };
@@ -101,8 +101,9 @@ class Flyer : public Enemy{
     public:
         Flyer(double x, double y);
         void move() override;
-        Projectile* useWeapon(double x, double y)override;
+        Projectile* useWeapon(double x, double y, Sound)override;       
         void draw(Texture2D characterTextures[]) override;
+
 };
 
 class User : public Player{
@@ -124,12 +125,12 @@ class User : public Player{
         const float blockRegenRate = 33.3f;
     public:
         User();
+        void jump(Sound);
         void draw(Texture2D characterTextures[]) override;
-        void jump();
         void move(double, double);
-        void updatejump();
+        void updatejump(Sound);
         void setOnObstacle(bool);
-        Projectile* useWeapon(double, double);
+        Projectile* useWeapon(double, double, Sound)override;
         void updateBlockEnergy();
         void setBlocking(bool);
         float getBlockEnergy() const;
