@@ -20,15 +20,18 @@ int main ()
 	bool closeWindow = false;
 
 	game.loadAssets();
+	game.loadSounds();
 
 	closeWindow = game.drawLogo();
+  
+	game.drawControls();
 
-	game.loadSounds();
-	
+	game.loadHighScore();
+  
 	while (!WindowShouldClose() && !closeWindow)
 	{
 		BeginDrawing();
-		
+
 		ClearBackground(BLACK);
 
 		game.takeInput();
@@ -36,6 +39,7 @@ int main ()
 		game.updateGame();
 
 		game.drawScreen();
+
 
 		if(game.checkGameOver()){
 			closeWindow = game.drawGameOver();
