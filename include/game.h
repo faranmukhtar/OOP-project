@@ -132,7 +132,7 @@ class Game{
         void drawBackground();
         void drawScreen();
         bool drawLogo();
-        bool drawcontrols();
+        bool drawControls();
         bool drawGameOver();
 
         void takeInput();
@@ -144,7 +144,7 @@ class Game{
         void loadHighScore();
         bool checkGameOver();
 
-        void displayScores();
+        void saveHighScore();
         void updateScore();
         void addKillScore(const string& enemyType);
         ~Game();

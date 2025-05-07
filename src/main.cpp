@@ -20,19 +20,19 @@ int main ()
 	bool closeWindow = false;
 
 	game.loadAssets();
+	game.loadSounds();
 
 	closeWindow = game.drawLogo();
   
-	game.drawcontrols();
+	game.drawControls();
 
-	game.loadSounds();
+	game.loadHighScore();
   
 	while (!WindowShouldClose() && !closeWindow)
 	{
 		BeginDrawing();
 
 		ClearBackground(BLACK);
-		game.displayScores();
 
 		game.takeInput();
 
