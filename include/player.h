@@ -15,20 +15,20 @@ const double BOMBER_HEALTH = 30;
 const double BOMBER_SPEED = 5;
 const double BOMBER_PROJECTILE_SPEEDY = 3;
 const double BOMBER_PROJECTILE_RADIUS = 10;
-const double BOMBER_PROJECTILE_DAMAGE = 30;
+const double BOMBER_PROJECTILE_DAMAGE = 15;
 
 const double GUNNER_WIDTH = 40;
 const double GUNNER_HEIGHT = 60;
 const double GUNNER_HEALTH = 60;
 const double GUNNER_SPEED = 5;
 const double GUNNER_MOVE_INTERVAL = 4;
-const double GUNNER_SHOOT_INTERVAL = 2.0;
+const double GUNNER_SHOOT_INTERVAL = 2;
 const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
 const double GUNNER_PROJECTILE_RADIUS = 5;
-const double GUNNER_PROJECTILE_DAMAGE = 20;
+const double GUNNER_PROJECTILE_DAMAGE = 10;
 
 const double FLYER_WIDTH = 40;
-const double FLYER_HEIGHT = 20;
+const double FLYER_HEIGHT = 40;
 const double FLYER_HEALTH = 250;
 const double FLYER_DAMAGE = 15;
 const double FLYER_SPEED = 15;
@@ -50,9 +50,11 @@ class Player{
         Rectangle hitbox;
         double health;
         double damage;
+        float frameCount;
+        int currentFrame;
     public:
         Player(double x, double y, double width, double height, double health, double damage);
-        virtual Projectile* useWeapon(double, double) = 0;
+        virtual Projectile* useWeapon(double, double, Sound) = 0;
         Rectangle getHitbox();
         void takeDamage(double);
         bool isAlive();
@@ -78,7 +80,7 @@ class Bomber : public Enemy{
         double targetX;
     public:
         Bomber(double x, double y);
-        Projectile* useWeapon(double x, double y) override;
+        Projectile* useWeapon(double x, double y, Sound) override;
         void move()override;
         void draw(Texture2D characterTextures[]) override;
 };
@@ -92,7 +94,7 @@ class Gunner : public Enemy{
         bool startPosReached;
     public:
         Gunner(double x, double y, double startX, double startY);
-        Projectile* useWeapon(double x, double y)override;
+        Projectile* useWeapon(double x, double y, Sound)override;
         void draw(Texture2D characterTextures[]) override;
         void move()override;
 };
@@ -101,8 +103,9 @@ class Flyer : public Enemy{
     public:
         Flyer(double x, double y);
         void move() override;
-        Projectile* useWeapon(double x, double y)override;
+        Projectile* useWeapon(double x, double y, Sound)override;       
         void draw(Texture2D characterTextures[]) override;
+
 };
 
 class User : public Player{
@@ -112,24 +115,22 @@ class User : public Player{
         float jumpvelocity;
         float shootTimer;
         float blockEnergy;
-        float frameCount;
-        int currentFrame;
         int currentTexture;
         bool onGround;
         bool onObstacle;
         bool isBlocking = false;
 
         const float maxBlockEnergy = 100.0f;
-        const float blockDepletionRate = 50.0f;
+        const float blockDepletionRate = 75.0f;
         const float blockRegenRate = 33.3f;
     public:
         User();
+        void jump(Sound);
         void draw(Texture2D characterTextures[]) override;
-        void jump();
         void move(double, double);
-        void updatejump();
+        void updatejump(Sound);
         void setOnObstacle(bool);
-        Projectile* useWeapon(double, double);
+        Projectile* useWeapon(double, double, Sound)override;
         void updateBlockEnergy();
         void setBlocking(bool);
         float getBlockEnergy() const;

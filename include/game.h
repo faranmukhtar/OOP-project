@@ -56,9 +56,13 @@ class Game{
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
 
-        Font fontOswald;
+        Font fontAnonymous;
 
-        Texture2D characterTextures[3];
+        Texture2D obstacleTexture;
+        Texture2D flyerTexture[1];
+        Texture2D bomberTexture[1];
+        Texture2D projectileTextures[4];
+        Texture2D userTextures[4];
         Texture2D startScreenTexture[2];
         Texture2D Instructions;
         Texture2D gameOverTexture[2];
@@ -86,12 +90,29 @@ class Game{
         double gunnerTimer = 0;
         double bomberTimer = 0;
         double scoreTimer = 0;
+
+
+        Music bgMusic;
+        Sound gunnerSpawnSound;  
+        Sound bomberSpawnSound;
+        Sound bombExplosionSound;
+        Sound flyerSound;       
+        Sound userHitSound;
+        Sound userDeathSound;
+        Sound enemyDeathSound;
+        Sound gunnerShootSound;
+        Sound bomberShootSound;
+        Sound userShootSound;
+        Sound userJumpSound;
+
     public:
         RenderTexture2D renderTexture;
 
         Game();
         void init();
 
+        void loadSounds();
+        void unloadSounds();
         void loadAssets();
         void unloadAssets();
 

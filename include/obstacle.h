@@ -10,6 +10,6 @@ class Obstacle{
     public:
         Obstacle(double x, double y);
         Rectangle getHitbox();
-        void draw();
+        void draw(Texture2D);
         void move(double x, double y);
 };
