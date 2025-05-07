@@ -48,6 +48,20 @@ class Game{
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
 
+        Font fontOswald;
+
+        Texture2D characterTextures[3];
+        Texture2D startScreenTexture[2];
+        Texture2D gameOverTexture[2];
+        Texture2D backgroundTextures[5];
+        Texture2D groundTextures[2];
+
+        const double groundScrollSpeed = 300;
+        const double backgroundScrollSpeed[5] = {0, 20, 40, 60, 80};
+
+        double groundScrollX;
+        double backgroundScrollX[5];
+
         const int baseScoreRate = 10;
         const int bomberKillBonus = 50;
         const int gunnerKillBonus = 100;
@@ -79,31 +93,43 @@ class Game{
         Sound userJumpSound;
 
     public:
+        RenderTexture2D renderTexture;
+
         Game();
         void init();
+
         void loadSounds();
         void unloadSounds();
+        void loadAssets();
+        void unloadAssets();
+
         void spawnEntities();
-        void despawnEnemies();
-        void updateEnemies();
         void spawnObstacles();
+
+        void despawnEnemies();
         void despawnObstacles();
-        void updateObstacles();
         void despawnProjectiles();
+
+        void updateEnemies();
+        void updateObstacles();
         void updateProjectiles();
         void updateGame();
-        bool loopGameOver();
-        bool checkGameOver();
+
+        void drawGround();
         void drawBackground();
         void drawScreen();
         bool drawLogo();
+        bool drawGameOver();
+
         void takeInput();
         void checkUserProjectilesCollision();
         void checkEnemyProjectilesCollision();
         void checkObstacleUserCollision();
         void checkUserOutOfBounds();
+
         void displayGameOver();
-        void drawGameOver();
+        bool checkGameOver();
+
         void displayScores();
         void updateScore();
         void addKillScore(const string& enemyType);

@@ -19,6 +19,8 @@ int main ()
 
 	bool closeWindow = false;
 
+	game.loadAssets();
+
 	closeWindow = game.drawLogo();
 
 	game.loadSounds();
@@ -36,7 +38,7 @@ int main ()
 		game.drawScreen();
 
 		if(game.checkGameOver()){
-			closeWindow = game.loopGameOver();
+			closeWindow = game.drawGameOver();
 		}
 
 		EndDrawing();
@@ -44,6 +46,8 @@ int main ()
 	}
 
 	game.unloadSounds();
+	game.unloadAssets();
+
 
 	CloseWindow();
 	return 0;
