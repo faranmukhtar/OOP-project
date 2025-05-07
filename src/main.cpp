@@ -22,20 +22,24 @@ int main ()
 	game.loadAssets();
 
 	closeWindow = game.drawLogo();
+  
+	game.drawcontrols();
 
 	game.loadSounds();
-	
+  
 	while (!WindowShouldClose() && !closeWindow)
 	{
 		BeginDrawing();
-		
+
 		ClearBackground(BLACK);
+		game.displayScores();
 
 		game.takeInput();
 
 		game.updateGame();
 
 		game.drawScreen();
+
 
 		if(game.checkGameOver()){
 			closeWindow = game.drawGameOver();
