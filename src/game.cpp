@@ -36,28 +36,34 @@ void Game::init(){
 }
 
 void Game::loadAssets(){
-    startScreenTexture = LoadTexture("Misc_textures/start_screen.png");
+    fontOswald = LoadFont("Fonts/Anonymous_Pro.ttf");
 
-    backgroundTextures[0] = LoadTexture("Background/1.png");
-    backgroundTextures[1] = LoadTexture("Background/2.png");
-    backgroundTextures[2] = LoadTexture("Background/3.png");
-    backgroundTextures[3] = LoadTexture("Background/4.png");
-    backgroundTextures[4] = LoadTexture("Background/5.png");
+    for(int i = 0; i < 2; i++){
+        startScreenTexture[i] = LoadTexture(("Misc_textures/start_screen" + to_string(i+1) + ".png").c_str());
+        gameOverTexture[i] = LoadTexture(("Misc_textures/game_over" + to_string(i+1) + ".png").c_str());
+        groundTextures[i] = LoadTexture(("Ground/" + to_string(i + 1) + ".png").c_str());
+    }
+
     for(int i = 0; i < 5; i++){
+        backgroundTextures[i] = LoadTexture(("Background/" + to_string(i+1) + ".png").c_str());
         backgroundScrollX[i] = 0;
     }
 
-    groundTextures[0] = LoadTexture("Ground/1.png");
-    groundTextures[1] = LoadTexture("Ground/2.png");
+    characterTextures[0] = LoadTexture("Character/Idle.png");
+    characterTextures[1] = LoadTexture("Character/Run.png");
+    characterTextures[2] = LoadTexture("Character/Jump.png");
+
     groundScrollX = 0;
 }
 
 void Game::unloadAssets(){
-    UnloadTexture(startScreenTexture);
+    UnloadFont(fontOswald);
     for(int i = 0; i < 5; i++){
         UnloadTexture(backgroundTextures[i]);
     }
     for(int i = 0; i < 2; i++){
+        UnloadTexture(startScreenTexture[i]);
+        UnloadTexture(gameOverTexture[i]);
         UnloadTexture(groundTextures[i]);
     }
 }
@@ -230,56 +236,29 @@ void Game::updateGame(){
     despawnProjectiles();
 }
 
-bool Game::loopGameOver(){
-    bool keyPressed = false;
-    displayGameOver();
-    while(!keyPressed && !WindowShouldClose()){
-        BeginDrawing();
-
-        ClearBackground(BLACK);
-
-        keyPressed = IsKeyPressed(KEY_ENTER);
-        drawGameOver();
-
-        EndDrawing();
-    }
-    if(WindowShouldClose()){
-        return true;
-    }
-    init();
-    return false;
-}
-
 bool Game::checkGameOver(){
     return !user->isAlive();
 }
 
 void Game::drawGround() {
-    Texture2D topTexture = groundTextures[0];    // First row texture
-    Texture2D fillTexture = groundTextures[1];   // Subsequent rows texture
+    Texture2D topTexture = groundTextures[0];
+    Texture2D fillTexture = groundTextures[1];
     
-    // Increased tile dimensions (adjust these values as needed)
-    const float tileScale = 1.5;  // 2x scale factor
+    const float tileScale = 1.5;  
     const int tileWidth = topTexture.width * tileScale;
     const int tileHeight = topTexture.height * tileScale;
-    const int groundHeight = 3;                  // Number of vertical tiles
+    const int groundHeight = 3;               
     
-    // Calculate how many horizontal tiles we need
     int numHorizontalTiles = (int)ceil(GetScreenWidth() / (float)tileWidth) + 1;
     
-    // Update scroll position (now using scaled width)
     groundScrollX -= groundScrollSpeed * GetFrameTime();
     groundScrollX = fmod(groundScrollX, tileWidth);
     
-    // Draw each layer from bottom to top
     for (int yLayer = 0; yLayer < groundHeight; yLayer++) {
-        // Choose texture based on layer
         Texture2D currentTexture = (yLayer == 0) ? topTexture : fillTexture;
         
-        // Calculate Y position - start from GROUND_Y and move up
         float yPos = GROUND_Y + yLayer * tileHeight;
         
-        // Draw all tiles in this layer with scaling
         for (int xTile = 0; xTile < numHorizontalTiles; xTile++) {
             float xPos = groundScrollX + xTile * tileWidth;
             
@@ -317,7 +296,7 @@ void Game::drawBackground(){
 void Game::drawScreen(){
     drawBackground();
     drawGround();
-    user->draw();
+    user->draw(characterTextures);
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->draw();
     }
@@ -328,7 +307,7 @@ void Game::drawScreen(){
         enemyProjectiles[i]->draw();
     }
     for(int i = 0; i < enemies.size(); i++){
-        enemies[i]->draw();
+        enemies[i]->draw(characterTextures);
     }
     string scoreText = to_string(score);
     while(scoreText.size() < 5)
@@ -346,10 +325,16 @@ void Game::drawScreen(){
 
 bool Game::drawLogo(){
     bool keyPressed = false;
+    float timer = 0;
     while(!WindowShouldClose() && !keyPressed){
         BeginDrawing();
 
-        DrawTexture(startScreenTexture, 0, 0, WHITE);
+        timer += GetFrameTime();
+        if(fmod(timer, 2.0) < 1.0){
+            DrawTexture(startScreenTexture[0], 0, 0, WHITE);
+        }else{
+            DrawTexture(startScreenTexture[1], 0, 0, WHITE);
+        }
 
         keyPressed = IsKeyPressed(KEY_ENTER);
 
@@ -358,6 +343,37 @@ bool Game::drawLogo(){
     if(WindowShouldClose()){
         return true;
     }
+    return false;
+}
+
+bool Game::drawGameOver(){
+    bool keyPressed = false;
+    displayGameOver();
+    float timer = 0;
+    while(!keyPressed && !WindowShouldClose()){
+        BeginDrawing();
+
+        ClearBackground(BLACK);
+
+        keyPressed = IsKeyPressed(KEY_ENTER);
+
+        timer += GetFrameTime();
+        if(fmod(timer, 2.0) < 1.0){
+            DrawTexture(gameOverTexture[0], 0, 0, WHITE);
+        }else{
+            DrawTexture(gameOverTexture[1], 0, 0, WHITE);
+        }
+        string scores = "Score:           " + to_string(score) + "\nHigh Score:      " + to_string(Highscore);
+        Vector2 textSize = MeasureTextEx(fontOswald, scores.c_str(), 34, 3);
+        int x = (SCREEN_WIDTH - textSize.x) / 2;
+        DrawTextEx(fontOswald, scores.c_str(), { (float)x, 350 }, 34, 3, WHITE);
+
+        EndDrawing();
+    }
+    if(WindowShouldClose()){
+        return true;
+    }
+    init();
     return false;
 }
 
@@ -457,7 +473,7 @@ void Game::displayGameOver(){
         cout<<"Error opening Score file"<<endl;
     }
     else{
-        if(score >Highscore){
+        if(score > Highscore){
             Scores.write(reinterpret_cast<char*>(&score),sizeof(score));
             Highscore = score;
         }
@@ -465,18 +481,6 @@ void Game::displayGameOver(){
 
     Scores.close();
 }
-
-void Game::drawGameOver(){
-    DrawText("Game Over", 380, 200, 40, YELLOW);
-    string scored = "Score: "+std::to_string(score);
-    string Hscore = "High Score: "+std::to_string(Highscore);
-    DrawText( scored.c_str(), 380, 250, 20, BLUE);
-    DrawText( Hscore.c_str(), 380, 283, 20, BLUE);
-
-    DrawText("Press Enter to play again", 380, 500, 20, WHITE);
-}
-
-
 
 void Game::displayScores() {
     ifstream Scores("Scores.dat", ios::binary | ios::in);

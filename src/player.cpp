@@ -65,7 +65,7 @@ Projectile* Bomber::useWeapon(double, double){
     return nullptr;
 }
 
-void Bomber::draw(){
+void Bomber::draw(Texture2D characterTextures[]){
     DrawRectangleRec(hitbox, GREEN);
 }
 
@@ -125,13 +125,13 @@ Projectile* Gunner::useWeapon(double userX, double userY){
     return nullptr;
 }
 
-void Gunner::draw(){
+void Gunner::draw(Texture2D characterTextures[]){
     DrawRectangleRec(hitbox, BLUE);
 }
 
 Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
 
-void Flyer::draw(){
+void Flyer::draw(Texture2D characterTextures[]){
     DrawRectangleRec(hitbox, WHITE);
 }
 
@@ -149,6 +149,9 @@ User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, U
     onGround = true;
     onObstacle = false;
     shootTimer = 0;
+    blockEnergy = 100.0f;
+    frameCount = 0;
+    currentTexture = 1;
 }
 
 void User::move(double x, double y){ 
@@ -171,9 +174,46 @@ void User::setOnObstacle(bool val){
     onObstacle = val;
 }
 
-void User::draw(){
-    DrawRectangleRec(hitbox, RED);
-    
+void User::draw(Texture2D characterTextures[]){
+    int totalFrames;
+    if(currentTexture== 1){
+        totalFrames = 6;
+    }else if(currentTexture == 2){
+        totalFrames = 4;
+    }
+
+    cout << currentTexture << endl;
+
+    frameCount++;
+    if (frameCount >= (60 / 8)) {
+        frameCount = 0;
+        currentFrame = (currentFrame + 1);
+        if(currentTexture == 2){
+            if(currentFrame > 3)
+            currentFrame = 3;
+        }else{
+            currentFrame = currentFrame % totalFrames;
+        }
+    }
+
+    int frameWidth = characterTextures[currentTexture].width / totalFrames;
+    int frameHeight = characterTextures[currentTexture].height;
+
+    Rectangle source = {
+        (float)(currentFrame * frameWidth),
+        0,
+        (float)frameWidth,
+        (float)frameHeight
+    };
+
+    Rectangle dest = {
+        hitbox.x - 20, hitbox.y - 45,
+        frameWidth * 3,
+        frameHeight * 3
+    };
+
+    Vector2 origin = { 0, 0 };
+    DrawTexturePro(characterTextures[currentTexture], source, dest, origin, 0.0f, WHITE);
 }
 
 void User::jump() {
@@ -182,6 +222,8 @@ void User::jump() {
         jumps--;
         onGround = false;
         onObstacle = false;
+        currentFrame = 0;
+        currentTexture = 2;
     }
 }
 
@@ -195,11 +237,15 @@ void User::updatejump() {
             jumpvelocity = 0;
             jumps = 2;
             onGround = true;
+            currentFrame = 0;
+            currentTexture = 1;
         }
     }
     else if(onObstacle){
         jumpvelocity = 0;
         jumps = 2;
+        currentFrame = 0;
+        currentTexture = 1;
     }
 }
 

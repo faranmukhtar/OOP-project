@@ -48,7 +48,11 @@ class Game{
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
 
-        Texture2D startScreenTexture;
+        Font fontOswald;
+
+        Texture2D characterTextures[3];
+        Texture2D startScreenTexture[2];
+        Texture2D gameOverTexture[2];
         Texture2D backgroundTextures[5];
         Texture2D groundTextures[2];
 
@@ -98,7 +102,7 @@ class Game{
         void drawBackground();
         void drawScreen();
         bool drawLogo();
-        void drawGameOver();
+        bool drawGameOver();
 
         void takeInput();
         void checkUserProjectilesCollision();
@@ -107,7 +111,6 @@ class Game{
         void checkUserOutOfBounds();
 
         void displayGameOver();
-        bool loopGameOver();
         bool checkGameOver();
 
         void displayScores();

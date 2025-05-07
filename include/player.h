@@ -59,7 +59,7 @@ class Player{
         double getHealth();
         double getDamage();
         void setPosition(double, double);
-        virtual void draw() = 0;
+        virtual void draw(Texture2D characterTextures[]) = 0;
 };
 
 class Enemy : public Player{
@@ -80,7 +80,7 @@ class Bomber : public Enemy{
         Bomber(double x, double y);
         Projectile* useWeapon(double x, double y) override;
         void move()override;
-        void draw() override;
+        void draw(Texture2D characterTextures[]) override;
 };
 
 class Gunner : public Enemy{ 
@@ -93,7 +93,7 @@ class Gunner : public Enemy{
     public:
         Gunner(double x, double y, double startX, double startY);
         Projectile* useWeapon(double x, double y)override;
-        void draw() override;
+        void draw(Texture2D characterTextures[]) override;
         void move()override;
 };
 
@@ -102,25 +102,29 @@ class Flyer : public Enemy{
         Flyer(double x, double y);
         void move() override;
         Projectile* useWeapon(double x, double y)override;
-        void draw() override;
+        void draw(Texture2D characterTextures[]) override;
 };
 
 class User : public Player{
     private:
-        float jumpvelocity;
         int jumps;
+        int score;
+        float jumpvelocity;
+        float shootTimer;
+        float blockEnergy;
+        float frameCount;
+        int currentFrame;
+        int currentTexture;
         bool onGround;
         bool onObstacle;
-        double shootTimer;
-        int score;
-        float blockEnergy = 100.0f;
+        bool isBlocking = false;
+
         const float maxBlockEnergy = 100.0f;
         const float blockDepletionRate = 50.0f;
         const float blockRegenRate = 33.3f;
-        bool isBlocking = false;
     public:
         User();
-        void draw() override;
+        void draw(Texture2D characterTextures[]) override;
         void jump();
         void move(double, double);
         void updatejump();
