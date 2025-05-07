@@ -11,6 +11,8 @@ int main ()
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Shadow Sprint");
 
+	InitAudioDevice();
+
 	SetTargetFPS(60);
 
 	SearchAndSetResourceDir("resources");
@@ -18,6 +20,8 @@ int main ()
 	bool closeWindow = false;
 
 	closeWindow = game.drawLogo();
+
+	game.loadSounds();
 	
 	while (!WindowShouldClose() && !closeWindow)
 	{
@@ -36,7 +40,10 @@ int main ()
 		}
 
 		EndDrawing();
+		
 	}
+
+	game.unloadSounds();
 
 	CloseWindow();
 	return 0;

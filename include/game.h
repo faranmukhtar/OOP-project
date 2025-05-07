@@ -63,9 +63,26 @@ class Game{
         double gunnerTimer = 0;
         double bomberTimer = 0;
         double scoreTimer = 0;
+
+
+        Music bgMusic;
+        Sound gunnerSpawnSound;  
+        Sound bomberSpawnSound;
+        Sound bombExplosionSound;
+        Sound flyerSound;       
+        Sound userHitSound;
+        Sound userDeathSound;
+        Sound enemyDeathSound;
+        Sound gunnerShootSound;
+        Sound bomberShootSound;
+        Sound userShootSound;
+        Sound userJumpSound;
+
     public:
         Game();
         void init();
+        void loadSounds();
+        void unloadSounds();
         void spawnEntities();
         void despawnEnemies();
         void updateEnemies();

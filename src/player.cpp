@@ -56,10 +56,11 @@ void Bomber::move(){
     }
 }
 
-Projectile* Bomber::useWeapon(double, double){
+Projectile* Bomber::useWeapon(double, double, Sound s){
     if(hasDroppedBomb) return nullptr;
     if(hitbox.x - targetX < 0){ 
         hasDroppedBomb = true;
+        PlaySound(s);
         return new Projectile(0, BOMBER_PROJECTILE_SPEEDY, hitbox.x, hitbox.y, BOMBER_PROJECTILE_RADIUS, PURPLE, damage);
     }
     return nullptr;
@@ -115,12 +116,13 @@ void Gunner::move(){
     }
 }
 
-Projectile* Gunner::useWeapon(double userX, double userY){  
+Projectile* Gunner::useWeapon(double userX, double userY, Sound s){  
     shootTimer += GetFrameTime();
     if (shootTimer >= GUNNER_SHOOT_INTERVAL){
         shootTimer = 0;
         Vector2 direction = {float(userX - hitbox.x),float(userY - hitbox.y)};
         direction = Vector2Normalize(direction);
+        PlaySound(s);
         return new Projectile(direction.x * GUNNER_PROJECTILE_SPEED_FACTOR, direction.y * GUNNER_PROJECTILE_SPEED_FACTOR, hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2, GUNNER_PROJECTILE_RADIUS, YELLOW, damage);
     }
     return nullptr;
@@ -140,7 +142,7 @@ void Flyer::move(){
     hitbox.x -= FLYER_SPEED;
 }
 
-Projectile* Flyer::useWeapon(double x, double y){
+Projectile* Flyer::useWeapon(double x, double y, Sound){
     return nullptr;
 }
 
@@ -157,9 +159,10 @@ void User::move(double x, double y){
     hitbox.y = hitbox.y + y;
 }
 
-Projectile* User::useWeapon(double mouseX, double mouseY){
+Projectile* User::useWeapon(double mouseX, double mouseY, Sound s){
     if(GetTime() - shootTimer > USER_SHOOT_INTERVAL){
         shootTimer = GetTime();
+        PlaySound(s);
         Vector2 shootLocation = {hitbox.x + hitbox.width, hitbox.y + hitbox.height / 4.0};
         Vector2 direction = {float(mouseX - shootLocation.x),float(mouseY - shootLocation.y)};
         direction = Vector2Normalize(direction);
@@ -177,7 +180,8 @@ void User::draw(){
     
 }
 
-void User::jump() {
+void User::jump(Sound s) {
+    PlaySound(s);
     if (jumps>0) {
         jumpvelocity = JUMP_VELOCITY; 
         jumps--;
@@ -186,7 +190,7 @@ void User::jump() {
     }
 }
 
-void User::updatejump() {
+void User::updatejump(Sound s) {
     if(!onGround && !onObstacle){
         jumpvelocity+= ACCELARATION; 
         hitbox.y += jumpvelocity;
