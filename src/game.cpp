@@ -36,7 +36,7 @@ void Game::init(){
 }
 
 void Game::loadAssets(){
-    fontOswald = LoadFont("Fonts/Anonymous_Pro.ttf");
+    fontAnonymous = LoadFont("Fonts/Anonymous_Pro.ttf");
 
     for(int i = 0; i < 2; i++){
         startScreenTexture[i] = LoadTexture(("Misc_textures/start_screen" + to_string(i+1) + ".png").c_str());
@@ -49,15 +49,19 @@ void Game::loadAssets(){
         backgroundScrollX[i] = 0;
     }
 
-    characterTextures[0] = LoadTexture("Character/Idle.png");
-    characterTextures[1] = LoadTexture("Character/Run.png");
-    characterTextures[2] = LoadTexture("Character/Jump.png");
+    projectileTextures[0] = LoadTexture("Bullets/User.png");
+    projectileTextures[1] = LoadTexture("Bullets/Gunner.png");
+
+    userTextures[0] = LoadTexture("User/DoubleJump.png");
+    userTextures[1] = LoadTexture("User/Run.png");
+    userTextures[2] = LoadTexture("User/Jump.png");
+    userTextures[3] = LoadTexture("User/shield.png");
 
     groundScrollX = 0;
 }
 
 void Game::unloadAssets(){
-    UnloadFont(fontOswald);
+    UnloadFont(fontAnonymous);
     for(int i = 0; i < 5; i++){
         UnloadTexture(backgroundTextures[i]);
     }
@@ -65,6 +69,12 @@ void Game::unloadAssets(){
         UnloadTexture(startScreenTexture[i]);
         UnloadTexture(gameOverTexture[i]);
         UnloadTexture(groundTextures[i]);
+    }
+    for(int i = 0; i < 4; i++){
+        UnloadTexture(userTextures[i]);
+    }
+    for(int i = 0; i < 3; i++){
+        projectileTextures[i];
     }
 }
 
@@ -296,19 +306,23 @@ void Game::drawBackground(){
 void Game::drawScreen(){
     drawBackground();
     drawGround();
-    user->draw(characterTextures);
+    user->draw(userTextures);
     for(int i = 0; i < obstacles.size(); i++){
         obstacles[i]->draw();
     }
+
     for(int i = 0; i < userProjectiles.size(); i++){
-        userProjectiles[i]->draw();
+        userProjectiles[i]->draw(projectileTextures[0]);
     }
+
     for(int i = 0; i < enemyProjectiles.size(); i++){
-        enemyProjectiles[i]->draw();
+        enemyProjectiles[i]->draw(projectileTextures[1]);
     }
+
     for(int i = 0; i < enemies.size(); i++){
-        enemies[i]->draw(characterTextures);
+        enemies[i]->draw(userTextures);
     }
+
     string scoreText = to_string(score);
     while(scoreText.size() < 5)
     scoreText.insert(0, 1, '0');
@@ -364,9 +378,9 @@ bool Game::drawGameOver(){
             DrawTexture(gameOverTexture[1], 0, 0, WHITE);
         }
         string scores = "Score:           " + to_string(score) + "\nHigh Score:      " + to_string(Highscore);
-        Vector2 textSize = MeasureTextEx(fontOswald, scores.c_str(), 34, 3);
+        Vector2 textSize = MeasureTextEx(fontAnonymous, scores.c_str(), 34, 3);
         int x = (SCREEN_WIDTH - textSize.x) / 2;
-        DrawTextEx(fontOswald, scores.c_str(), { (float)x, 350 }, 34, 3, WHITE);
+        DrawTextEx(fontAnonymous, scores.c_str(), { (float)x, 350 }, 34, 3, WHITE);
 
         EndDrawing();
     }

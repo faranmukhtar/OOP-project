@@ -176,22 +176,21 @@ void User::setOnObstacle(bool val){
 
 void User::draw(Texture2D characterTextures[]){
     int totalFrames;
-    if(currentTexture== 1){
+    if(currentTexture <= 1){
         totalFrames = 6;
     }else if(currentTexture == 2){
         totalFrames = 4;
     }
 
-    cout << currentTexture << endl;
-
     frameCount++;
     if (frameCount >= (60 / 8)) {
         frameCount = 0;
         currentFrame = (currentFrame + 1);
-        if(currentTexture == 2){
-            if(currentFrame > 3)
-            currentFrame = 3;
-        }else{
+        if(currentTexture == 2 || currentFrame == 0){
+            if(currentFrame > totalFrames - 1)
+            currentFrame = totalFrames - 1;
+        }
+        else{
             currentFrame = currentFrame % totalFrames;
         }
     }
@@ -213,17 +212,41 @@ void User::draw(Texture2D characterTextures[]){
     };
 
     Vector2 origin = { 0, 0 };
+
+    if(isBlocking && blockEnergy > 5){
+        Rectangle source = {
+            0,
+            0,
+            (float)characterTextures[3].width,
+            (float)characterTextures[3].height
+        };
+
+        Rectangle dest = {
+            hitbox.x - 40, hitbox.y - 20,
+            frameWidth * 3,
+            frameHeight * 3
+        };
+
+        DrawTexturePro(characterTextures[3], source, dest, origin, 0.0f, WHITE);
+    }
+
     DrawTexturePro(characterTextures[currentTexture], source, dest, origin, 0.0f, WHITE);
 }
 
 void User::jump() {
+    cout << jumps << endl;
+    if(jumps == 2){
+        currentTexture = 2;
+    }
+    else if(jumps == 1){
+        currentTexture = 0;
+    }
     if (jumps>0) {
         jumpvelocity = JUMP_VELOCITY; 
         jumps--;
         onGround = false;
         onObstacle = false;
         currentFrame = 0;
-        currentTexture = 2;
     }
 }
 
