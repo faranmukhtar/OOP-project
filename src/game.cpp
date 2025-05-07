@@ -468,18 +468,16 @@ void Game::checkUserOutOfBounds(){
 }
 
 void Game::displayGameOver(){
-    fstream Scores("Scores.dat",ios::binary|ios::out);
-    if(!Scores){
-        cout<<"Error opening Score file"<<endl;
+    if(score > Highscore){
+        fstream Scores("Scores.dat",ios::binary|ios::out | ios::trunc);
+            if(!Scores){
+                cout<<"Error opening Score file"<<endl;
+            }
+            
+        Scores.write(reinterpret_cast<char*>(&score),sizeof(score));
+        Highscore = score;
+        Scores.close();
     }
-    else{
-        if(score > Highscore){
-            Scores.write(reinterpret_cast<char*>(&score),sizeof(score));
-            Highscore = score;
-        }
-    }
-
-    Scores.close();
 }
 
 void Game::displayScores() {

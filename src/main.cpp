@@ -21,6 +21,8 @@ int main ()
 
 	closeWindow = game.drawLogo();
 	
+	game.displayScores();
+
 	while (!WindowShouldClose() && !closeWindow)
 	{
 		BeginDrawing();
