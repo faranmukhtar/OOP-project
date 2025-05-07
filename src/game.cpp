@@ -110,7 +110,10 @@ void Game::loadAssets(){
 
     flyerTexture[0] = LoadTexture("Textures/Flyer/Flyer.png");
 
-    bomberTexture[0] = LoadTexture("Textures/Bomber/temp.jpg");
+    bomberTexture[0] = LoadTexture("Textures/Bomber/Walk2.png");
+
+    gunnerTextures[0] = LoadTexture("Textures/Gunner/Forward.png");
+    gunnerTextures[1] = LoadTexture("Textures/Gunner/Idle.png");
 
     obstacleTexture = LoadTexture("Textures/Misc_textures/obstacle.png");
 
@@ -578,7 +581,7 @@ void Game::drawScreen(){
         }else if(enemies[i]->getType() == "bomber"){
             enemies[i]->draw(bomberTexture);
         }else{
-            enemies[i]->draw(bomberTexture);
+            enemies[i]->draw(gunnerTextures);
         }
     }
 

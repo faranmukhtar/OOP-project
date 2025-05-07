@@ -61,6 +61,7 @@ class Game{
         Texture2D obstacleTexture;
         Texture2D flyerTexture[1];
         Texture2D bomberTexture[1];
+        Texture2D gunnerTextures[2];
         Texture2D projectileTextures[4];
         Texture2D userTextures[4];
         Texture2D startScreenTexture[2];
