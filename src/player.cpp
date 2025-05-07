@@ -8,6 +8,8 @@ Player::Player(double x, double y, double width, double height, double health, d
     this->hitbox.height = height;
     this->hitbox.width = width;
     this->damage = damage;
+    this->frameCount = 0;
+    this->currentFrame = 0;
 };
 
 void Player::takeDamage(double val){
@@ -61,13 +63,43 @@ Projectile* Bomber::useWeapon(double, double, Sound s){
     if(hitbox.x - targetX < 0){ 
         hasDroppedBomb = true;
         PlaySound(s);
-        return new Projectile(0, BOMBER_PROJECTILE_SPEEDY, hitbox.x, hitbox.y, BOMBER_PROJECTILE_RADIUS, PURPLE, damage);
+        return new Projectile(0, BOMBER_PROJECTILE_SPEEDY, hitbox.x + hitbox.width / 2, hitbox.y, BOMBER_PROJECTILE_RADIUS, PURPLE, damage);
     }
     return nullptr;
 }
 
 void Bomber::draw(Texture2D characterTextures[]){
-    DrawRectangleRec(hitbox, GREEN);
+    int totalFrames = 1;
+
+    frameCount++;
+    if (frameCount >= (60 / 8)) {
+        frameCount = 0;
+        currentFrame = (currentFrame + 1) % totalFrames;
+    }
+
+    int frameWidth = characterTextures[0].width / totalFrames;
+    int frameHeight = characterTextures[0].height;
+
+    Rectangle source = {
+        (float)(currentFrame * frameWidth),
+        0,
+        (float)frameWidth,
+        (float)frameHeight
+    };
+
+    Rectangle dest = {
+        hitbox.x + 20,
+        hitbox.y + 20,
+        frameWidth * 2,
+        frameHeight * 2
+    };
+
+    Vector2 origin = {
+        (frameWidth * 2) / 2,
+        (frameHeight * 2) / 2
+    };
+
+    DrawTexturePro(characterTextures[0], source, dest, origin, 0.0f, WHITE);
 }
 
 Gunner::Gunner(double x, double y, double startX, double startY) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"){
@@ -76,6 +108,7 @@ Gunner::Gunner(double x, double y, double startX, double startY) : Enemy(x, y, G
     startPosReached = false;
     startPos.x = startX;
     startPos.y = startY;
+    shootTimer = (float)(rand() % int(GUNNER_SHOOT_INTERVAL));
 }
 
 void Gunner::move(){ 
@@ -134,7 +167,37 @@ void Gunner::draw(Texture2D characterTextures[]){
 Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
 
 void Flyer::draw(Texture2D characterTextures[]){
-    DrawRectangleRec(hitbox, WHITE);
+    int totalFrames = 8;
+
+    frameCount++;
+    if (frameCount >= (60 / 8)) {
+        frameCount = 0;
+        currentFrame = (currentFrame + 1) % totalFrames;
+    }
+
+    int frameWidth = characterTextures[0].width / totalFrames;
+    int frameHeight = characterTextures[0].height;
+
+    Rectangle source = {
+        (float)(currentFrame * frameWidth),
+        0,
+        (float)frameWidth,
+        (float)frameHeight
+    };
+
+    Rectangle dest = {
+        hitbox.x + 20,
+        hitbox.y + 20,
+        frameWidth * 2,
+        frameHeight * 2
+    };
+
+    Vector2 origin = {
+        (frameWidth * 2) / 2,
+        (frameHeight * 2) / 2
+    };
+
+    DrawTexturePro(characterTextures[0], source, dest, origin, 0.0f, WHITE);
 }
 
 void Flyer::move(){
@@ -152,7 +215,6 @@ User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, U
     onObstacle = false;
     shootTimer = 0;
     blockEnergy = 100.0f;
-    frameCount = 0;
     currentTexture = 1;
 }
 

@@ -11,33 +11,34 @@ Projectile::Projectile(double speedX, double SpeedY, double x, double y, double 
 }
 
 void Projectile::draw(Texture2D texture) {
-    // Calculate angle in degrees (Raylib uses degrees)
+    // Calculate angle in degrees
     float angle = atan2(speed.y, speed.x) * RAD2DEG;
     
-    // Calculate the actual center point accounting for scaling
-    Vector2 textureCenter = {
-        center.x - (texture.width * 3.0f) / 2,
-        center.y - (texture.height * 3.0f) / 2
-    };
+    // Calculate scale factor based on radius (using the texture's diagonal for most accurate scaling)
+    float textureDiagonal = sqrtf(texture.width*texture.width + texture.height*texture.height);
+    float scale = (radius * 4.0f) / textureDiagonal;
     
-    // Define the rotation origin (center of texture)
-    Vector2 origin = {
-        (texture.width * 3.0f) / 2,
-        (texture.height * 3.0f) / 2
-    };
+    // Calculate the actual drawing parameters
+    Vector2 origin = {texture.width / 2.0f, texture.height / 2.0f};
+    Vector2 drawPosition = center; // Start from center point
     
-    // Draw rotated texture perfectly centered
+    // Draw with perfect centering
     DrawTexturePro(
         texture,
-        Rectangle{0, 0, (float)texture.width, (float)texture.height},
-        Rectangle{center.x, center.y, texture.width * 3.0f, texture.height * 3.0f},
-        origin,
+        {0, 0, (float)texture.width, (float)texture.height},
+        {
+            drawPosition.x,  // X position (will be centered via origin)
+            drawPosition.y,  // Y position (will be centered via origin)
+            texture.width * scale,
+            texture.height * scale
+        },
+        origin,  // This is what ensures perfect centering
         angle,
         WHITE
     );
-    
-    // Debug draw (remove in final version)
-    DrawCircleV(center, radius, Fade(RED, 0.3f));
+
+    // Debug visualization - should perfectly match texture edges
+    // DrawCircleV(center, radius, Fade(RED, 0.1f));
 }
 
 void Projectile::move(){

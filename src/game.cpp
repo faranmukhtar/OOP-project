@@ -83,23 +83,30 @@ void Game::loadAssets(){
     fontAnonymous = LoadFont("Fonts/Anonymous_Pro.ttf");
 
     for(int i = 0; i < 2; i++){
-        startScreenTexture[i] = LoadTexture(("Misc_textures/start_screen" + to_string(i+1) + ".png").c_str());
-        gameOverTexture[i] = LoadTexture(("Misc_textures/game_over" + to_string(i+1) + ".png").c_str());
-        groundTextures[i] = LoadTexture(("Ground/" + to_string(i + 1) + ".png").c_str());
+        startScreenTexture[i] = LoadTexture(("Textures/Misc_textures/start_screen" + to_string(i+1) + ".png").c_str());
+        gameOverTexture[i] = LoadTexture(("Textures/Misc_textures/game_over" + to_string(i+1) + ".png").c_str());
+        groundTextures[i] = LoadTexture(("Textures/Ground/" + to_string(i + 1) + ".png").c_str());
     }
 
     for(int i = 0; i < 5; i++){
-        backgroundTextures[i] = LoadTexture(("Background/" + to_string(i+1) + ".png").c_str());
+        backgroundTextures[i] = LoadTexture(("Textures/Background/" + to_string(i+1) + ".png").c_str());
         backgroundScrollX[i] = 0;
     }
 
-    projectileTextures[0] = LoadTexture("Bullets/User.png");
-    projectileTextures[1] = LoadTexture("Bullets/Gunner.png");
+    projectileTextures[0] = LoadTexture("Textures/Bullets/User.png");
+    projectileTextures[1] = LoadTexture("Textures/Bullets/Gunner.png");
+    projectileTextures[2] = LoadTexture("Textures/Bullets/Bomb.png");
 
-    userTextures[0] = LoadTexture("User/DoubleJump.png");
-    userTextures[1] = LoadTexture("User/Run.png");
-    userTextures[2] = LoadTexture("User/Jump.png");
-    userTextures[3] = LoadTexture("User/shield.png");
+    userTextures[0] = LoadTexture("Textures/User/DoubleJump.png");
+    userTextures[1] = LoadTexture("Textures/User/Run.png");
+    userTextures[2] = LoadTexture("Textures/User/Jump.png");
+    userTextures[3] = LoadTexture("Textures/User/shield.png");
+
+    flyerTexture[0] = LoadTexture("Textures/Flyer/Flyer.png");
+
+    bomberTexture[0] = LoadTexture("Textures/Bomber/temp.jpg");
+
+    obstacleTexture = LoadTexture("Textures/Misc_textures/obstacle.png");
 
     groundScrollX = 0;
 }
@@ -363,7 +370,7 @@ void Game::drawScreen(){
     drawGround();
     user->draw(userTextures);
     for(int i = 0; i < obstacles.size(); i++){
-        obstacles[i]->draw();
+        obstacles[i]->draw(obstacleTexture);
     }
 
     for(int i = 0; i < userProjectiles.size(); i++){
@@ -375,7 +382,13 @@ void Game::drawScreen(){
     }
 
     for(int i = 0; i < enemies.size(); i++){
-        enemies[i]->draw(userTextures);
+        if(enemies[i]->getType() == "flyer"){
+            enemies[i]->draw(flyerTexture);
+        }else if(enemies[i]->getType() == "bomber"){
+            enemies[i]->draw(bomberTexture);
+        }else{
+            enemies[i]->draw(bomberTexture);
+        }
     }
 
     string scoreText = to_string(score);

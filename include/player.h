@@ -14,7 +14,7 @@ const double BOMBER_HEIGHT = 40;
 const double BOMBER_HEALTH = 30;
 const double BOMBER_SPEED = 5;
 const double BOMBER_PROJECTILE_SPEEDY = 3;
-const double BOMBER_PROJECTILE_RADIUS = 15;
+const double BOMBER_PROJECTILE_RADIUS = 10;
 const double BOMBER_PROJECTILE_DAMAGE = 15;
 
 const double GUNNER_WIDTH = 40;
@@ -22,13 +22,13 @@ const double GUNNER_HEIGHT = 60;
 const double GUNNER_HEALTH = 60;
 const double GUNNER_SPEED = 5;
 const double GUNNER_MOVE_INTERVAL = 4;
-const double GUNNER_SHOOT_INTERVAL = 2.0;
+const double GUNNER_SHOOT_INTERVAL = 2;
 const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
 const double GUNNER_PROJECTILE_RADIUS = 5;
 const double GUNNER_PROJECTILE_DAMAGE = 10;
 
 const double FLYER_WIDTH = 40;
-const double FLYER_HEIGHT = 20;
+const double FLYER_HEIGHT = 40;
 const double FLYER_HEALTH = 250;
 const double FLYER_DAMAGE = 15;
 const double FLYER_SPEED = 15;
@@ -50,6 +50,8 @@ class Player{
         Rectangle hitbox;
         double health;
         double damage;
+        float frameCount;
+        int currentFrame;
     public:
         Player(double x, double y, double width, double height, double health, double damage);
         virtual Projectile* useWeapon(double, double, Sound) = 0;
@@ -113,8 +115,6 @@ class User : public Player{
         float jumpvelocity;
         float shootTimer;
         float blockEnergy;
-        float frameCount;
-        int currentFrame;
         int currentTexture;
         bool onGround;
         bool onObstacle;
