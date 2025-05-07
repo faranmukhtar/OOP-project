@@ -668,4 +668,3 @@ Game::~Game(){
 
     delete user;
 }
-

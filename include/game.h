@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include<stdexcept>
 #include "resource_dir.h"
 #include "constants.h"
 #include "player.h"
@@ -7,6 +8,13 @@
 #include "projectile.h"
 #include <fstream>
 #include <vector>
+
+class FileException : public exception{
+    public:
+        const char * what() const noexcept override{
+            return "Unable to open file";
+        }
+};
 
 const string OBSTACLE_PATTERN[][3][3] = {{{"O", "O", "O"},
                                           {"O", "X", "O"},
@@ -52,6 +60,7 @@ class Game{
 
         Texture2D characterTextures[3];
         Texture2D startScreenTexture[2];
+        Texture2D Instructions;
         Texture2D gameOverTexture[2];
         Texture2D backgroundTextures[5];
         Texture2D groundTextures[2];
@@ -102,6 +111,7 @@ class Game{
         void drawBackground();
         void drawScreen();
         bool drawLogo();
+        bool drawcontrols();
         bool drawGameOver();
 
         void takeInput();
@@ -110,7 +120,7 @@ class Game{
         void checkObstacleUserCollision();
         void checkUserOutOfBounds();
 
-        void displayGameOver();
+        void loadHighScore();
         bool checkGameOver();
 
         void displayScores();
