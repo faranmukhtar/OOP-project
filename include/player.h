@@ -14,8 +14,8 @@ const double BOMBER_HEIGHT = 40;
 const double BOMBER_HEALTH = 30;
 const double BOMBER_SPEED = 5;
 const double BOMBER_PROJECTILE_SPEEDY = 3;
-const double BOMBER_PROJECTILE_RADIUS = 10;
-const double BOMBER_PROJECTILE_DAMAGE = 30;
+const double BOMBER_PROJECTILE_RADIUS = 15;
+const double BOMBER_PROJECTILE_DAMAGE = 15;
 
 const double GUNNER_WIDTH = 40;
 const double GUNNER_HEIGHT = 60;
@@ -25,7 +25,7 @@ const double GUNNER_MOVE_INTERVAL = 4;
 const double GUNNER_SHOOT_INTERVAL = 2.0;
 const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
 const double GUNNER_PROJECTILE_RADIUS = 5;
-const double GUNNER_PROJECTILE_DAMAGE = 20;
+const double GUNNER_PROJECTILE_DAMAGE = 10;
 
 const double FLYER_WIDTH = 40;
 const double FLYER_HEIGHT = 20;
@@ -121,7 +121,7 @@ class User : public Player{
         bool isBlocking = false;
 
         const float maxBlockEnergy = 100.0f;
-        const float blockDepletionRate = 50.0f;
+        const float blockDepletionRate = 75.0f;
         const float blockRegenRate = 33.3f;
     public:
         User();

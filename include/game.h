@@ -48,9 +48,10 @@ class Game{
         vector<Projectile*> enemyProjectiles;
         vector<Projectile*> userProjectiles;
 
-        Font fontOswald;
+        Font fontAnonymous;
 
-        Texture2D characterTextures[3];
+        Texture2D projectileTextures[4];
+        Texture2D userTextures[4];
         Texture2D startScreenTexture[2];
         Texture2D gameOverTexture[2];
         Texture2D backgroundTextures[5];

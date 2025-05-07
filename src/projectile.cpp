@@ -10,8 +10,34 @@ Projectile::Projectile(double speedX, double SpeedY, double x, double y, double 
     this->damage = damage;
 }
 
-void Projectile::draw(){ 
-    DrawCircleV(center, radius, color);
+void Projectile::draw(Texture2D texture) {
+    // Calculate angle in degrees (Raylib uses degrees)
+    float angle = atan2(speed.y, speed.x) * RAD2DEG;
+    
+    // Calculate the actual center point accounting for scaling
+    Vector2 textureCenter = {
+        center.x - (texture.width * 3.0f) / 2,
+        center.y - (texture.height * 3.0f) / 2
+    };
+    
+    // Define the rotation origin (center of texture)
+    Vector2 origin = {
+        (texture.width * 3.0f) / 2,
+        (texture.height * 3.0f) / 2
+    };
+    
+    // Draw rotated texture perfectly centered
+    DrawTexturePro(
+        texture,
+        Rectangle{0, 0, (float)texture.width, (float)texture.height},
+        Rectangle{center.x, center.y, texture.width * 3.0f, texture.height * 3.0f},
+        origin,
+        angle,
+        WHITE
+    );
+    
+    // Debug draw (remove in final version)
+    DrawCircleV(center, radius, Fade(RED, 0.3f));
 }
 
 void Projectile::move(){
