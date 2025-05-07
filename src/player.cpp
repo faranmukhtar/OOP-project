@@ -180,9 +180,9 @@ void Gunner::draw(Texture2D characterTextures[]){
     int frameHeight = characterTextures[0].height;
 
     Rectangle source = {
-        (float)(currentFrame * frameWidth),
+        (float)((currentFrame + 1) * frameWidth), 
         0,
-        (float)frameWidth,
+        -(float)frameWidth, 
         (float)frameHeight
     };
 
