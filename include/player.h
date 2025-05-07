@@ -92,6 +92,7 @@ class Gunner : public Enemy{
         double moveTimer;
         float shootTimer;
         bool startPosReached;
+        int currentTexture;
     public:
         Gunner(double x, double y, double startX, double startY);
         Projectile* useWeapon(double x, double y, Sound)override;

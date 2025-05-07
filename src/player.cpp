@@ -69,7 +69,7 @@ Projectile* Bomber::useWeapon(double, double, Sound s){
 }
 
 void Bomber::draw(Texture2D characterTextures[]){
-    int totalFrames = 1;
+    int totalFrames = 4;
 
     frameCount++;
     if (frameCount >= (60 / 8)) {
@@ -109,6 +109,7 @@ Gunner::Gunner(double x, double y, double startX, double startY) : Enemy(x, y, G
     startPos.x = startX;
     startPos.y = startY;
     shootTimer = (float)(rand() % int(GUNNER_SHOOT_INTERVAL));
+    currentTexture = 0;
 }
 
 void Gunner::move(){ 
@@ -129,6 +130,7 @@ void Gunner::move(){
     else{
         moveTimer += GetFrameTime();  
         if (moveTimer >= GUNNER_MOVE_INTERVAL){
+            currentTexture = 0;
             if(hitbox.x <= SCREEN_WIDTH - 400 || 
                 hitbox.x + hitbox.width >= SCREEN_WIDTH - 50 ||
                 hitbox.y + hitbox.height >= 300 ||
@@ -144,6 +146,8 @@ void Gunner::move(){
             }
             hitbox.x += speed.x;
             hitbox.y += speed.y;
+        }else{
+            currentTexture = 1;
         }
     }
 }
@@ -161,7 +165,40 @@ Projectile* Gunner::useWeapon(double userX, double userY, Sound s){
 }
 
 void Gunner::draw(Texture2D characterTextures[]){
-    DrawRectangleRec(hitbox, BLUE);
+    int totalFrames;
+    if(currentTexture == 1 || currentTexture == 0){
+        totalFrames = 4;
+    }
+
+    frameCount++;
+    if (frameCount >= (60 / 8)) {
+        frameCount = 0;
+        currentFrame = (currentFrame + 1) % totalFrames;
+    }
+
+    int frameWidth = characterTextures[0].width / totalFrames;
+    int frameHeight = characterTextures[0].height;
+
+    Rectangle source = {
+        (float)(currentFrame * frameWidth),
+        0,
+        (float)frameWidth,
+        (float)frameHeight
+    };
+
+    Rectangle dest = {
+        hitbox.x + 20,
+        hitbox.y + 20,
+        frameWidth * 2,
+        frameHeight * 2
+    };
+
+    Vector2 origin = {
+        (frameWidth * 2) / 2,
+        (frameHeight * 2) / 2
+    };
+
+    DrawTexturePro(characterTextures[0], source, dest, origin, 0.0f, WHITE);
 }
 
 Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
