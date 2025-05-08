@@ -1,7 +1,7 @@
 #include "player.h"
 
 
-Player::Player(double x, double y, double width, double height, double health, double damage){
+Player::Player(float x, float y, float width, float height, float health, float damage){
     this->health = health;
     this->hitbox.x = x;
     this->hitbox.y = y;
@@ -12,11 +12,11 @@ Player::Player(double x, double y, double width, double height, double health, d
     this->currentFrame = 0;
 };
 
-void Player::takeDamage(double val){
+void Player::takeDamage(float val){
     health -= val;
 }
 
-void Player::setPosition(double x, double y){
+void Player::setPosition(float x, float y){
     hitbox.x = x;
     hitbox.y = y;
 }
@@ -25,11 +25,11 @@ bool Player::isAlive(){
     return health > 0;
 }
 
-double Player::getDamage(){
+float Player::getDamage(){
     return damage;
 }
 
-double Player::getHealth(){
+float Player::getHealth(){
     return health;
 }
 
@@ -37,7 +37,7 @@ Rectangle Player::getHitbox(){
     return hitbox;
 }
 
-Enemy::Enemy(double x, double y, double width, double height, double health, double damage, string type) : Player(x, y, width, height, health, damage){
+Enemy::Enemy(float x, float y, float width, float height, float health, float damage, string type) : Player(x, y, width, height, health, damage){
     this->type = type;
 }
 
@@ -45,7 +45,7 @@ string Enemy::getType(){
     return type;
 }
 
-Bomber::Bomber(double x, double y) : Enemy(x, y, BOMBER_WIDTH, BOMBER_HEIGHT, BOMBER_HEALTH, BOMBER_PROJECTILE_DAMAGE, "bomber"), hasDroppedBomb(false){
+Bomber::Bomber(float x, float y) : Enemy(x, y, BOMBER_WIDTH, BOMBER_HEIGHT, BOMBER_HEALTH, BOMBER_PROJECTILE_DAMAGE, "bomber"), hasDroppedBomb(false){
     targetX = ((rand() % 10) + 0.5) * SCREEN_WIDTH / 10;
 }
 
@@ -58,7 +58,7 @@ void Bomber::move(){
     }
 }
 
-Projectile* Bomber::useWeapon(double, double, Sound s){
+Projectile* Bomber::useWeapon(float, float, Sound s){
     if(hasDroppedBomb) return nullptr;
     if(hitbox.x - targetX < 0){ 
         hasDroppedBomb = true;
@@ -102,7 +102,7 @@ void Bomber::draw(Texture2D characterTextures[]){
     DrawTexturePro(characterTextures[0], source, dest, origin, 0.0f, WHITE);
 }
 
-Gunner::Gunner(double x, double y, double startX, double startY) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"){
+Gunner::Gunner(float x, float y, float startX, float startY) : Enemy(x, y, GUNNER_WIDTH, GUNNER_HEIGHT, GUNNER_HEALTH, GUNNER_PROJECTILE_DAMAGE, "gunner"){
     shootTimer = 0;
     moveTimer = 0;
     startPosReached = false;
@@ -131,7 +131,7 @@ void Gunner::move(){
         moveTimer += GetFrameTime();  
         if (moveTimer >= GUNNER_MOVE_INTERVAL){
             currentTexture = 0;
-            if(hitbox.x <= SCREEN_WIDTH - 400 || 
+            if(hitbox.x <= SCREEN_WIDTH - 600 || 
                 hitbox.x + hitbox.width >= SCREEN_WIDTH - 50 ||
                 hitbox.y + hitbox.height >= 300 ||
                 hitbox.y <= 50){
@@ -152,7 +152,7 @@ void Gunner::move(){
     }
 }
 
-Projectile* Gunner::useWeapon(double userX, double userY, Sound s){  
+Projectile* Gunner::useWeapon(float userX, float userY, Sound s){  
     shootTimer += GetFrameTime();
     if (shootTimer >= GUNNER_SHOOT_INTERVAL){
         shootTimer = 0;
@@ -201,7 +201,7 @@ void Gunner::draw(Texture2D characterTextures[]){
     DrawTexturePro(characterTextures[0], source, dest, origin, 0.0f, WHITE);
 }
 
-Flyer::Flyer(double x, double y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
+Flyer::Flyer(float x, float y) : Enemy(x, y, FLYER_WIDTH, FLYER_HEIGHT, FLYER_HEALTH, FLYER_DAMAGE, "flyer"){}
 
 void Flyer::draw(Texture2D characterTextures[]){
     int totalFrames = 8;
@@ -241,7 +241,7 @@ void Flyer::move(){
     hitbox.x -= FLYER_SPEED;
 }
 
-Projectile* Flyer::useWeapon(double x, double y, Sound){
+Projectile* Flyer::useWeapon(float x, float y, Sound){
     return nullptr;
 }
 
@@ -255,12 +255,12 @@ User::User() : Player(USER_X, GROUND_Y - USER_HEIGHT, USER_WIDTH, USER_HEIGHT, U
     currentTexture = 1;
 }
 
-void User::move(double x, double y){ 
+void User::move(float x, float y){ 
     hitbox.x = hitbox.x + x;
     hitbox.y = hitbox.y + y;
 }
 
-Projectile* User::useWeapon(double mouseX, double mouseY, Sound s){
+Projectile* User::useWeapon(float mouseX, float mouseY, Sound s){
     if(GetTime() - shootTimer > USER_SHOOT_INTERVAL){
         shootTimer = GetTime();
         PlaySound(s);
@@ -336,7 +336,6 @@ void User::draw(Texture2D characterTextures[]){
 }
 
 void User::jump(Sound s) {
-    PlaySound(s);
     if(jumps == 2){
         currentTexture = 2;
     }
@@ -344,6 +343,7 @@ void User::jump(Sound s) {
         currentTexture = 0;
     }
     if (jumps>0) {
+        PlaySound(s);
         jumpvelocity = JUMP_VELOCITY; 
         jumps--;
         onGround = false;

@@ -286,7 +286,7 @@ void Game::despawnProjectiles(){
 
     for(int i = 0; i < userProjectiles.size(); i++){
         Vector2 center = userProjectiles[i]->getCenter();
-        double radius = userProjectiles[i]->getRadius();
+        float radius = userProjectiles[i]->getRadius();
 
         if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
             delete userProjectiles[i];
@@ -304,7 +304,7 @@ void Game::despawnProjectiles(){
 
     for(int i = 0; i < enemyProjectiles.size(); i++){
         Vector2 center = enemyProjectiles[i]->getCenter();
-        double radius = enemyProjectiles[i]->getRadius();
+        float radius = enemyProjectiles[i]->getRadius();
 
         if(center.y + radius < 0 || center.y - radius > SCREEN_HEIGHT || center.x + radius < 0 || center.x - radius > SCREEN_WIDTH){
             delete enemyProjectiles[i];

@@ -1,6 +1,6 @@
 #include "projectile.h"
 
-Projectile::Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color, double damage){
+Projectile::Projectile(float speedX, float SpeedY, float x, float y, float radius, Color color, float damage){
     speed.x = speedX;
     speed.y = SpeedY;
     center.x = x;
@@ -46,17 +46,17 @@ void Projectile::move(){
     center.y += speed.y;
 }
 
-void Projectile::adjustSpeed(double x, double y){
+void Projectile::adjustSpeed(float x, float y){
     speed.x = x;
     speed.y = y;
 }
 
-void Projectile::setPosition(double x, double y){
+void Projectile::setPosition(float x, float y){
     center.x = x;
     center.y = y;
 }
 
-double Projectile::getDamage(){
+float Projectile::getDamage(){
     return damage;
 }
 
@@ -68,7 +68,7 @@ Vector2 Projectile::getCenter(){
     return center;
 }
 
-double Projectile::getRadius(){
+float Projectile::getRadius(){
     return radius;
 }
 

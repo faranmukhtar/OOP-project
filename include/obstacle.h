@@ -8,8 +8,8 @@ class Obstacle{
     private:
         Rectangle hitbox;
     public:
-        Obstacle(double x, double y);
+        Obstacle(float x, float y);
         Rectangle getHitbox();
         void draw(Texture2D);
-        void move(double x, double y);
+        void move(float x, float y);
 };

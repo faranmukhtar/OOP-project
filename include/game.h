@@ -44,8 +44,8 @@ const string OBSTACLE_PATTERN[][3][3] = {{{"O", "O", "O"},
                                           {"O", "X", "X"},
                                           {"X", "X", "X"}}};
 
-const double PLAYER_SPEED = 10;
-const double OBSTACLE_SPEED = 10;
+const float PLAYER_SPEED = 10;
+const float OBSTACLE_SPEED = 10;
 
 //Game logic goes here
 class Game{
@@ -70,27 +70,27 @@ class Game{
         Texture2D backgroundTextures[5];
         Texture2D groundTextures[2];
 
-        const double groundScrollSpeed = 300;
-        const double backgroundScrollSpeed[5] = {0, 20, 40, 60, 80};
+        const float groundScrollSpeed = 300;
+        const float backgroundScrollSpeed[5] = {0, 20, 40, 60, 80};
 
-        double groundScrollX;
-        double backgroundScrollX[5];
+        float groundScrollX;
+        float backgroundScrollX[5];
 
         const int baseScoreRate = 10;
         const int bomberKillBonus = 50;
         const int gunnerKillBonus = 100;
         const int flyerKillBonus = 30;
-        const double obstacleInterval = 5;
-        const double gunnerInterval = 6;
-        const double bomberInterval = 10;
-        const double outOfBoundsDamage = 0.5;
+        const float obstacleInterval = 5;
+        const float gunnerInterval = 4;
+        const float bomberInterval = 10;
+        const float outOfBoundsDamage = 0.5;
 
         int score = 0;
         int Highscore = -99;
-        double obstacleTimer = 0;
-        double gunnerTimer = 0;
-        double bomberTimer = 0;
-        double scoreTimer = 0;
+        float obstacleTimer = 0;
+        float gunnerTimer = 0;
+        float bomberTimer = 0;
+        float scoreTimer = 0;
 
 
         Music bgMusic;

@@ -9,58 +9,58 @@
 
 using namespace std;
 
-const double BOMBER_WIDTH = 40;
-const double BOMBER_HEIGHT = 40;
-const double BOMBER_HEALTH = 30;
-const double BOMBER_SPEED = 5;
-const double BOMBER_PROJECTILE_SPEEDY = 3;
-const double BOMBER_PROJECTILE_RADIUS = 10;
-const double BOMBER_PROJECTILE_DAMAGE = 15;
+const float BOMBER_WIDTH = 40;
+const float BOMBER_HEIGHT = 40;
+const float BOMBER_HEALTH = 30;
+const float BOMBER_SPEED = 5;
+const float BOMBER_PROJECTILE_SPEEDY = 5;
+const float BOMBER_PROJECTILE_RADIUS = 10;
+const float BOMBER_PROJECTILE_DAMAGE = 15;
 
-const double GUNNER_WIDTH = 40;
-const double GUNNER_HEIGHT = 60;
-const double GUNNER_HEALTH = 60;
-const double GUNNER_SPEED = 5;
-const double GUNNER_MOVE_INTERVAL = 4;
-const double GUNNER_SHOOT_INTERVAL = 2;
-const double GUNNER_PROJECTILE_SPEED_FACTOR = 5;
-const double GUNNER_PROJECTILE_RADIUS = 5;
-const double GUNNER_PROJECTILE_DAMAGE = 10;
+const float GUNNER_WIDTH = 40;
+const float GUNNER_HEIGHT = 60;
+const float GUNNER_HEALTH = 60;
+const float GUNNER_SPEED = 5;
+const float GUNNER_MOVE_INTERVAL = 0.5;
+const float GUNNER_SHOOT_INTERVAL = 2;
+const float GUNNER_PROJECTILE_SPEED_FACTOR = 5;
+const float GUNNER_PROJECTILE_RADIUS = 5;
+const float GUNNER_PROJECTILE_DAMAGE = 10;
 
-const double FLYER_WIDTH = 40;
-const double FLYER_HEIGHT = 40;
-const double FLYER_HEALTH = 250;
-const double FLYER_DAMAGE = 15;
-const double FLYER_SPEED = 15;
+const float FLYER_WIDTH = 40;
+const float FLYER_HEIGHT = 40;
+const float FLYER_HEALTH = 250;
+const float FLYER_DAMAGE = 15;
+const float FLYER_SPEED = 15;
 
-const double USER_X = 50;
-const double USER_WIDTH = 50;
-const double USER_HEIGHT = 100;
-const double USER_HEALTH = 100;
-const double USER_SHOOT_INTERVAL = 0.5;
-const double USER_PROJECTILE_SPEED_FACTOR = 8;
-const double USER_PROJECTILE_RADIUS = 5;
-const double USER_PROJECTILE_DAMAGE = 20;
+const float USER_X = 50;
+const float USER_WIDTH = 50;
+const float USER_HEIGHT = 100;
+const float USER_HEALTH = 100;
+const float USER_SHOOT_INTERVAL = 0.5;
+const float USER_PROJECTILE_SPEED_FACTOR = 8;
+const float USER_PROJECTILE_RADIUS = 5;
+const float USER_PROJECTILE_DAMAGE = 20;
 
-const double JUMP_VELOCITY = -15;
-const double ACCELARATION = 0.8;
+const float JUMP_VELOCITY = -15;
+const float ACCELARATION = 0.8;
 
 class Player{
     protected:
         Rectangle hitbox;
-        double health;
-        double damage;
+        float health;
+        float damage;
         float frameCount;
         int currentFrame;
     public:
-        Player(double x, double y, double width, double height, double health, double damage);
-        virtual Projectile* useWeapon(double, double, Sound) = 0;
+        Player(float x, float y, float width, float height, float health, float damage);
+        virtual Projectile* useWeapon(float, float, Sound) = 0;
         Rectangle getHitbox();
-        void takeDamage(double);
+        void takeDamage(float);
         bool isAlive();
-        double getHealth();
-        double getDamage();
-        void setPosition(double, double);
+        float getHealth();
+        float getDamage();
+        void setPosition(float, float);
         virtual void draw(Texture2D characterTextures[]) = 0;
 };
 
@@ -69,7 +69,7 @@ class Enemy : public Player{
         string type;
         Vector2 speed;
     public:
-        Enemy(double x, double y, double width, double height, double health, double damage, string type);
+        Enemy(float x, float y, float width, float height, float health, float damage, string type);
         virtual void move() = 0;
         string getType();
 };
@@ -77,10 +77,10 @@ class Enemy : public Player{
 class Bomber : public Enemy{
     private:
         bool hasDroppedBomb;
-        double targetX;
+        float targetX;
     public:
-        Bomber(double x, double y);
-        Projectile* useWeapon(double x, double y, Sound) override;
+        Bomber(float x, float y);
+        Projectile* useWeapon(float x, float y, Sound) override;
         void move()override;
         void draw(Texture2D characterTextures[]) override;
 };
@@ -89,22 +89,22 @@ class Gunner : public Enemy{
     private:
         Vector2 speed;
         Vector2 startPos;
-        double moveTimer;
+        float moveTimer;
         float shootTimer;
         bool startPosReached;
         int currentTexture;
     public:
-        Gunner(double x, double y, double startX, double startY);
-        Projectile* useWeapon(double x, double y, Sound)override;
+        Gunner(float x, float y, float startX, float startY);
+        Projectile* useWeapon(float x, float y, Sound)override;
         void draw(Texture2D characterTextures[]) override;
         void move()override;
 };
 
 class Flyer : public Enemy{
     public:
-        Flyer(double x, double y);
+        Flyer(float x, float y);
         void move() override;
-        Projectile* useWeapon(double x, double y, Sound)override;       
+        Projectile* useWeapon(float x, float y, Sound)override;       
         void draw(Texture2D characterTextures[]) override;
 
 };
@@ -128,10 +128,10 @@ class User : public Player{
         User();
         void jump(Sound);
         void draw(Texture2D characterTextures[]) override;
-        void move(double, double);
+        void move(float, float);
         void updatejump(Sound);
         void setOnObstacle(bool);
-        Projectile* useWeapon(double, double, Sound)override;
+        Projectile* useWeapon(float, float, Sound)override;
         void updateBlockEnergy();
         void setBlocking(bool);
         float getBlockEnergy() const;

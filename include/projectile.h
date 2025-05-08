@@ -8,18 +8,18 @@ class Projectile{
     protected:
         Vector2 speed;
         Vector2 center;
-        double radius;
+        float radius;
         Color color;
-        double damage;
+        float damage;
     public:
-        Projectile(double speedX, double SpeedY, double x, double y, double radius, Color color, double damage);
+        Projectile(float speedX, float SpeedY, float x, float y, float radius, Color color, float damage);
         void draw(Texture2D texture);
         void move();
-        void adjustSpeed(double, double);
-        double getDamage();
+        void adjustSpeed(float, float);
+        float getDamage();
         Vector2 getCenter();
         Vector2 getSpeed();
-        double getRadius();
+        float getRadius();
         Color getColor();
-        void setPosition(double, double);
+        void setPosition(float, float);
 };

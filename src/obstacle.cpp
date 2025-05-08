@@ -1,6 +1,6 @@
 #include "obstacle.h"
 
-Obstacle::Obstacle(double x, double y){
+Obstacle::Obstacle(float x, float y){
     hitbox.x = x;
     hitbox.y = y;
     hitbox.width = OBSTACLE_LENGTH;
@@ -22,7 +22,7 @@ void Obstacle::draw(Texture2D texture) {
     );
 }
 
-void Obstacle::move(double x, double y){
+void Obstacle::move(float x, float y){
     hitbox.x += x;
     hitbox.y += y;
 }
