@@ -1,44 +1,42 @@
 #include "projectile.h"
 
-Projectile::Projectile(float speedX, float SpeedY, float x, float y, float radius, Color color, float damage){
+Projectile::Projectile(float speedX, float SpeedY, float x, float y, float radius, float damage){
     speed.x = speedX;
     speed.y = SpeedY;
     center.x = x;
     center.y = y;
     this->radius = radius;
-    this->color = color;
     this->damage = damage;
 }
 
 void Projectile::draw(Texture2D texture) {
-    // Calculate angle in degrees
+    // calculate angle
     float angle = atan2(speed.y, speed.x) * RAD2DEG;
     
-    // Calculate scale factor based on radius (using the texture's diagonal for most accurate scaling)
+    //using texture diagonal for better scaling
     float textureDiagonal = sqrtf(texture.width*texture.width + texture.height*texture.height);
     float scale = (radius * 4.0f) / textureDiagonal;
     
-    // Calculate the actual drawing parameters
+    //center from where the projectile will be rotated
     Vector2 origin = {texture.width / 2.0f, texture.height / 2.0f};
-    Vector2 drawPosition = center; // Start from center point
-    
-    // Draw with perfect centering
-    DrawTexturePro(
-        texture,
-        {0, 0, (float)texture.width, (float)texture.height},
-        {
-            drawPosition.x,  // X position (will be centered via origin)
-            drawPosition.y,  // Y position (will be centered via origin)
-            texture.width * scale,
-            texture.height * scale
-        },
-        origin,  // This is what ensures perfect centering
-        angle,
-        WHITE
-    );
 
-    // Debug visualization - should perfectly match texture edges
-    // DrawCircleV(center, radius, Fade(RED, 0.1f));
+    //saving texture dimensions
+    Rectangle source = {
+        0,
+        0, 
+        (float)texture.width, 
+        (float)texture.height
+    };
+
+    //saving location dimensions
+    Rectangle dest = {
+        center.x, 
+        center.y,
+        texture.width * scale,
+        texture.height * scale
+    };
+    
+    DrawTexturePro(texture, source, dest, origin, angle, WHITE);
 }
 
 void Projectile::move(){
@@ -70,8 +68,4 @@ Vector2 Projectile::getCenter(){
 
 float Projectile::getRadius(){
     return radius;
-}
-
-Color Projectile::getColor(){
-    return color;
 }

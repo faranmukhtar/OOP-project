@@ -23,9 +23,11 @@ int main ()
 	game.loadSounds();
 
 	closeWindow = game.drawLogo();
-  
-	game.drawControls();
+	
+	if(!closeWindow)
+	closeWindow = game.drawControls();
 
+	if(!closeWindow)
 	game.loadHighScore();
   
 	while (!WindowShouldClose() && !closeWindow)

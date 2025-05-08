@@ -12,14 +12,8 @@ Rectangle Obstacle::getHitbox(){
 }
 
 void Obstacle::draw(Texture2D texture) {
-    DrawTexturePro(
-        texture,
-        Rectangle{0, 0, (float)texture.width, (float)texture.height}, 
-        hitbox,     
-        Vector2{0, 0},                                                  
-        0.0f,                                                           
-        WHITE
-    );
+    //Mapping the texture onto the hitbox
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, hitbox, Vector2{0, 0}, 0.0f, WHITE);
 }
 
 void Obstacle::move(float x, float y){
